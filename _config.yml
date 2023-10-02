@@ -3,17 +3,18 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: 凌波微步的博客院子
 subtitle: ''
 description: ''
 keywords:
-author: John Doe
-language: en
+author: 戒不掉的帅气
+language: zh-CN
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://lingzhiwen.gitee.io/myblog
+root: /myblog
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -67,7 +68,9 @@ index_generator:
 
 # Category & Tag
 default_category: uncategorized
-category_map:
+category_map: 
+  "yesterday's thoughts": yesterdays-thoughts
+  "C++": c-plus-plus
 tag_map:
 
 # Metadata elements
@@ -92,15 +95,20 @@ pagination_dir: page
 ## include:/exclude: options only apply to the 'source/' folder
 include:
 exclude:
-- "jeklyll/bundle"
 ignore:
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-# theme: landscape
+theme: next
 
-# Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: ''
+# menu:
+#   home: / 
+#   categories: /categories
+#   archives: /archives
+  # nav:
+  #   - Home: /
+  #   - Categories: /categories
+  #   # 添加下面的配置
+  #   - Categories1: /categories1
+  #   - Categories2: /categories2
