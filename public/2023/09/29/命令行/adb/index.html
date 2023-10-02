@@ -1,25 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"lingzhiwen.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-
-    <meta name="description" content="1. 常用命令：12345678910111213141516171819202122232425262728293031323334353637383940414243adb devices #查看连接设备adb -s cf123456 shell # 指定连接设备使用命令adb install test.apk # 安装应用adb install -r demo.apk #安装apk 到sd">
+  <meta charset="utf-8">
+  
+  
+  <title>Adb命令 | 凌波微步的博客院子</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="1. 常用命令：12345678910111213141516171819202122232425262728293031323334353637383940414243adb devices #查看连接设备adb -s cf123456 shell # 指定连接设备使用命令adb install test.apk # 安装应用adb install -r demo.apk #安装apk 到sd">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Adb命令">
 <meta property="og:url" content="https://lingzhiwen.github.io/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/index.html">
@@ -30,184 +17,91 @@
 <meta property="article:modified_time" content="2023-10-02T06:00:29.727Z">
 <meta property="article:author" content="戒不掉的帅气">
 <meta name="twitter:card" content="summary">
-
-
-<link rel="canonical" href="https://lingzhiwen.github.io/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/">
-
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://lingzhiwen.github.io/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/","path":"2023/09/29/命令行/Adb/","title":"Adb命令"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Adb命令 | 凌波微步的博客院子</title>
   
+    <link rel="alternate" href="/atom.xml" title="凌波微步的博客院子" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
 
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
 
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
 
-
-
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-
-  <main class="main">
-    <div class="column">
-      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">凌波微步的博客院子</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://lingzhiwen.github.io"></form>
+      </div>
     </div>
   </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">凌波微步的博客院子</p>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger" aria-label="搜索" role="button">
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
 </header>
+
+      <div class="outer">
+        <section id="main"><article id="post-命令行/Adb" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/" class="article-date">
+  <time class="dt-published" datetime="2023-09-29T03:53:59.181Z" itemprop="datePublished">2023-09-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/">命令行</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
         
   
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1. 常用命令：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%9F%A5%E7%9C%8B%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF-%E5%BA%94%E7%94%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">2.查看版本信息&amp;应用信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85%E5%92%8C%E5%8D%B8%E8%BD%BD"><span class="nav-number">3.</span> <span class="nav-text">3.安装和卸载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%90%AF%E5%8A%A8%E5%81%9C%E6%AD%A2%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">4.启动停止服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E4%B8%8E%E5%BA%94%E7%94%A8%E4%BA%A4%E4%BA%92"><span class="nav-number">5.</span> <span class="nav-text">5.与应用交互</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E6%A8%A1%E6%8B%9F%E6%8C%89%E9%94%AE-%E8%BE%93%E5%85%A5"><span class="nav-number">6.</span> <span class="nav-text">6.模拟按键&#x2F;输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E5%AE%9E%E7%94%A8%E5%8A%9F%E8%83%BD"><span class="nav-number">7.</span> <span class="nav-text">7.实用功能</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%88%AA%E5%9B%BE"><span class="nav-number">7.1.</span> <span class="nav-text">截图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BD%95%E5%88%B6%E5%B1%8F%E5%B9%95"><span class="nav-number">7.2.</span> <span class="nav-text">录制屏幕</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%9A%84WiFi%E5%AF%86%E7%A0%81"><span class="nav-number">7.3.</span> <span class="nav-text">查看连接过的WiFi密码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%B7%E6%9C%BA%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4"><span class="nav-number">7.4.</span> <span class="nav-text">刷机相关命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E7%9B%B8%E5%85%B3"><span class="nav-number">7.5.</span> <span class="nav-text">日志相关</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1App%E5%90%AF%E5%8A%A8%E8%80%97%E6%97%B6"><span class="nav-number">7.6.</span> <span class="nav-text">统计App启动耗时</span></a></li></ol></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">戒不掉的帅气</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">5</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">1</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-  </nav>
-</div>
-
-        </div>
-      </div>
-    </div>
-
-    
-  </aside>
-
-
-    </div>
-
-    <div class="main-inner post posts-expand">
-
-
+    <h1 class="p-name article-title" itemprop="headline name">
+      Adb命令
+    </h1>
   
 
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="戒不掉的帅气">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="凌波微步的博客院子">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Adb命令 | 凌波微步的博客院子">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Adb命令
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2023-09-29 11:53:59" itemprop="dateCreated datePublished" datetime="2023-09-29T11:53:59+08:00">2023-09-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-02 14:00:29" itemprop="dateModified" datetime="2023-10-02T14:00:29+08:00">2023-10-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/" itemprop="url" rel="index"><span itemprop="name">命令行</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
       </header>
-
     
-    
-    
-    <div class="post-body" itemprop="articleBody"><h4 id="1-常用命令："><a href="#1-常用命令：" class="headerlink" title="1. 常用命令："></a>1. 常用命令：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">adb devices #查看连接设备</span><br><span class="line"></span><br><span class="line">adb -s cf123456 shell # 指定连接设备使用命令</span><br><span class="line"></span><br><span class="line">adb install test.apk # 安装应用</span><br><span class="line"></span><br><span class="line">adb install -r demo.apk #安装apk 到sd 卡：</span><br><span class="line"></span><br><span class="line">adb uninstall cn.com.test.mobile #卸载应用，需要指定包</span><br><span class="line"></span><br><span class="line">adb uninstall -k cn.com.test.mobile #卸载app 但保留数据和缓存文件</span><br><span class="line"></span><br><span class="line">adb shell pm list packages #列出手机装的所有app 的包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages -3 #列出除了系统应用的第三方应用包名</span><br><span class="line"></span><br><span class="line">adb shell pm clear cn.com.test.mobile #清除应用数据与缓存</span><br><span class="line"></span><br><span class="line">adb shell am start -ncn.com.test.mobile/.ui.SplashActivity #启动应用</span><br><span class="line"></span><br><span class="line">adb shell dumpsys package #包信息Package Information</span><br><span class="line"></span><br><span class="line">adb shell dumpsys meminfo #内存使用情况Memory Usage</span><br><span class="line"></span><br><span class="line">adb shell am force-stop cn.com.test.mobile #强制停止应用</span><br><span class="line"></span><br><span class="line">adb logcat #查看日志</span><br><span class="line"></span><br><span class="line">adb logcat -c #清除log 缓存</span><br><span class="line"></span><br><span class="line">adb logcat *:W #过滤warn日志</span><br><span class="line"></span><br><span class="line">adb reboot #重启</span><br><span class="line"></span><br><span class="line">adb shell top -s 10 #查看占用内存前10 的app</span><br><span class="line"></span><br><span class="line">adb push &lt;local&gt; &lt;remote&gt; #从本地复制文件到设备</span><br><span class="line"></span><br><span class="line">adb pull &lt;remote&gt; &lt;local&gt; #从设备复制文件到本地</span><br><span class="line"></span><br><span class="line">adb bugreport #查看bug 报告</span><br><span class="line"></span><br><span class="line">adb help #查看ADB 帮助</span><br></pre></td></tr></table></figure>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="1-常用命令："><a href="#1-常用命令：" class="headerlink" title="1. 常用命令："></a>1. 常用命令：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">adb devices #查看连接设备</span><br><span class="line"></span><br><span class="line">adb -s cf123456 shell # 指定连接设备使用命令</span><br><span class="line"></span><br><span class="line">adb install test.apk # 安装应用</span><br><span class="line"></span><br><span class="line">adb install -r demo.apk #安装apk 到sd 卡：</span><br><span class="line"></span><br><span class="line">adb uninstall cn.com.test.mobile #卸载应用，需要指定包</span><br><span class="line"></span><br><span class="line">adb uninstall -k cn.com.test.mobile #卸载app 但保留数据和缓存文件</span><br><span class="line"></span><br><span class="line">adb shell pm list packages #列出手机装的所有app 的包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages -3 #列出除了系统应用的第三方应用包名</span><br><span class="line"></span><br><span class="line">adb shell pm clear cn.com.test.mobile #清除应用数据与缓存</span><br><span class="line"></span><br><span class="line">adb shell am start -ncn.com.test.mobile/.ui.SplashActivity #启动应用</span><br><span class="line"></span><br><span class="line">adb shell dumpsys package #包信息Package Information</span><br><span class="line"></span><br><span class="line">adb shell dumpsys meminfo #内存使用情况Memory Usage</span><br><span class="line"></span><br><span class="line">adb shell am force-stop cn.com.test.mobile #强制停止应用</span><br><span class="line"></span><br><span class="line">adb logcat #查看日志</span><br><span class="line"></span><br><span class="line">adb logcat -c #清除log 缓存</span><br><span class="line"></span><br><span class="line">adb logcat *:W #过滤warn日志</span><br><span class="line"></span><br><span class="line">adb reboot #重启</span><br><span class="line"></span><br><span class="line">adb shell top -s 10 #查看占用内存前10 的app</span><br><span class="line"></span><br><span class="line">adb push &lt;local&gt; &lt;remote&gt; #从本地复制文件到设备</span><br><span class="line"></span><br><span class="line">adb pull &lt;remote&gt; &lt;local&gt; #从设备复制文件到本地</span><br><span class="line"></span><br><span class="line">adb bugreport #查看bug 报告</span><br><span class="line"></span><br><span class="line">adb help #查看ADB 帮助</span><br></pre></td></tr></table></figure>
 
 <h4 id="2-查看版本信息-应用信息"><a href="#2-查看版本信息-应用信息" class="headerlink" title="2.查看版本信息&amp;应用信息"></a>2.查看版本信息&amp;应用信息</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">adb shell getprop ro.build.version.release  查看Android 系统版本</span><br><span class="line"></span><br><span class="line">adb shell getprop ro.product.model  查看设备型号</span><br><span class="line"></span><br><span class="line">adb shell dumpsys battery   电池状况</span><br><span class="line"></span><br><span class="line">adb get-serialno    获取设备序列号</span><br><span class="line"></span><br><span class="line">adb shell wm size   查看屏幕分辨率</span><br><span class="line"></span><br><span class="line">adb shell wm density    查看屏幕密度</span><br><span class="line"></span><br><span class="line">adb shell settings get secure android_id  查看android_id</span><br><span class="line"></span><br><span class="line">adb shell -&gt; su -&gt; service call iphonesubinfo 1    查看IMEI</span><br><span class="line"></span><br><span class="line">adb shell cat /sys/class/net/wlan0/address  Mac地址,设备不同可能地址不同</span><br><span class="line"></span><br><span class="line">adb shell cat /proc/cpuinfo     CPU 信息</span><br><span class="line"></span><br><span class="line">adb shell cat /proc/meminfo     内存信息</span><br><span class="line"></span><br><span class="line">adb shell cat /system/build.prop    更多硬件与系统属性</span><br><span class="line"></span><br><span class="line">adb shell ps    查看进程</span><br><span class="line"></span><br><span class="line">adb shell pm list packages  列出手机装的所有app 的包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages -s   列出系统应用的所有包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages -3   列出除了系统应用的第三方应用包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages | find &quot;test&quot; win    列出手机装带有的test的包</span><br><span class="line"></span><br><span class="line">adb shell pm list packages | grep ‘test’ linux  列出手机装带有的test的包</span><br><span class="line"></span><br><span class="line">adb shell cat /sys/class/net/wlan0/address 获取MAC 地址, 根据系统版本参数可能不同</span><br><span class="line"></span><br><span class="line">adb shell dumpsys activity services [&lt;packagename&gt;] 查看正在运行的Services</span><br><span class="line"></span><br><span class="line">&lt;packagename&gt; 参数不是必须的，指定&lt;packagename&gt; 表示查看与某个包名相关的Services，不指定表示查看所有Services。</span><br><span class="line"></span><br><span class="line">&lt;packagename&gt; 不一定要给出完整的包名，比如运行adb shell dumpsys activity services com.tencent，那么包名com.tencent.weixin、com.tencent.qq 等相关的Services 都会列出来。</span><br></pre></td></tr></table></figure>
 
@@ -226,87 +120,136 @@
 <h5 id="日志相关"><a href="#日志相关" class="headerlink" title="日志相关"></a>日志相关</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">adb logcat -c &amp;&amp; adb logcat &gt;log.txt</span><br><span class="line"></span><br><span class="line">adb logcat *:E &gt;log.txt</span><br><span class="line"></span><br><span class="line">ANR文件导出：</span><br><span class="line">1.adb pull data/anr/traces.txt</span><br><span class="line">2.adb bugreport C:\Users\summer\Desktop</span><br></pre></td></tr></table></figure>
 
 <h5 id="统计App启动耗时"><a href="#统计App启动耗时" class="headerlink" title="统计App启动耗时"></a>统计App启动耗时</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell start -S -W com.example.camera/.MainActivity</span><br></pre></td></tr></table></figure>
+      
     </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-
-        
-
-          <div class="post-nav">
-            <div class="post-nav-item">
-            </div>
-            <div class="post-nav-item">
-                <a href="/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Mac%E7%BB%88%E7%AB%AF/" rel="next" title="Mac终端">
-                  Mac终端 <i class="fa fa-angle-right"></i>
-                </a>
-            </div>
-          </div>
+    <footer class="article-footer">
+      <a data-url="https://lingzhiwen.github.io/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/" data-id="cln8heate000006goegjm7lyg" data-title="Adb命令" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
     </footer>
-  </article>
-</div>
-
-
-
-
-
-
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-  <div class="copyright">
-    &copy; 
-    <span itemprop="copyrightYear">2023</span>
-    <span class="with-love">
-      <i class="fa fa-heart"></i>
-    </span>
-    <span class="author" itemprop="copyrightHolder">戒不掉的帅气</span>
   </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Mac%E7%BB%88%E7%AB%AF/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Mac终端
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/">命令行</a></li></ul>
+    </div>
   </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">十月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">九月 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Linux/">Linux</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Android%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/">Android源码编译</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Git/">Git</a>
+          </li>
+        
+          <li>
+            <a href="/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Mac%E7%BB%88%E7%AB%AF/">Mac终端</a>
+          </li>
+        
+          <li>
+            <a href="/2023/09/29/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/">Adb命令</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 戒不掉的帅气<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
 
     </div>
-  </footer>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
 
   
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
   </div>
-  <div class="sidebar-dimmer"></div>
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up fa-lg"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
-
-  
-
-
-
-
-
-
-  
-
-
-
-
-
 </body>
 </html>
