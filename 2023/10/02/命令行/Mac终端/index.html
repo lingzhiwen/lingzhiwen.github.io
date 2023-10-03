@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-10-02T14:58:43.269Z">
 <meta property="article:modified_time" content="2023-10-02T14:58:43.269Z">
-<meta property="article:author" content="戒不掉的帅气">
+<meta property="article:author" content="凌波微步">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Mac%E7%BB%88%E7%AB%AF/">
@@ -154,7 +154,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="戒不掉的帅气">
+      <meta itemprop="name" content="凌波微步">
       <meta itemprop="description" content="">
     </span>
 
@@ -229,6 +229,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -280,7 +281,7 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">戒不掉的帅气</p>
+  <p class="site-author-name" itemprop="name">凌波微步</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -325,7 +326,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">戒不掉的帅气</span>
+  <span class="author" itemprop="copyrightHolder">凌波微步</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
@@ -380,6 +381,26 @@
   
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'bf37a6341f2fc4e68d60',
+      clientSecret: '2cb255975031412007c42f102073727121d42ec4',
+      repo        : 'lingzhiwen/blogComment',
+      owner       : 'lingzhiwen',
+      admin       : ['lingzhiwen'],
+      id          : '70cb401156637995e8db249ad7d84911',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>
