@@ -112,3 +112,8 @@ theme: next
   #   # 添加下面的配置
   #   - Categories1: /categories1
   #   - Categories2: /categories2
+deploy:
+  type: git
+  repo: https://github.com/lingzhiwen/lingzhiwen.github.io.git
+  # example, https://github.com/hexojs/hexojs.github.io
+  branch: main
