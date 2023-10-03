@@ -14,7 +14,7 @@ timezone: ''
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://lingzhiwen.github.io
-# root: /public
+root: /public
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -112,8 +112,8 @@ ignore:
   #   # 添加下面的配置
   #   - Categories1: /categories1
   #   - Categories2: /categories2
-# deploy:
-#   type: git
-#   repo: https://github.com/lingzhiwen/lingzhiwen.github.io.git
-#   # example, https://github.com/hexojs/hexojs.github.io
-#   branch: main
+deploy:
+  type: git
+  repo: git@github.com:lingzhiwen/lingzhiwen.github.io.git
+  # example, https://github.com/hexojs/hexojs.github.io
+  branch: gh-pages
