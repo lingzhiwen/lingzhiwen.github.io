@@ -145,6 +145,185 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.2%EF%BC%89binder%E9%A9%B1%E5%8A%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="凌波微步">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="凌波微步的博客院子">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.2%EF%BC%89binder%E9%A9%B1%E5%8A%A8/" class="post-title-link" itemprop="url">binder驱动</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-10-04 10:41:50 / 修改时间：10:52:25" itemprop="dateCreated datePublished" datetime="2023-10-04T10:41:50+08:00">2023-10-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">Framework内核解析</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/IPC-Binder%E6%9C%BA%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">IPC Binder机制</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="binder驱动"><a href="#binder驱动" class="headerlink" title="binder驱动"></a>binder驱动</h1><p>学习binder的时候，一定要牢记这张图的层级结构，这样在讲解的时候，你才能知道讲解的是哪块内容。<br><img src="/images/binder_driver_files/binder1.png" alt="image"></p>
+<p>这块我们主要掌握四个方法：</p>
+<ol>
+<li>binder_init：初始化binder驱动</li>
+<li>binder_open：打开binder驱动</li>
+<li>binder_mmap：设置内存映射</li>
+<li>binder_ioctl：数据读写操作</li>
+</ol>
+<p>其中 binder_init 方法是在idle初始化的时候就会调用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kernel/common/drivers/android/binder.c</span></span><br><span class="line"><span class="comment">// 设备驱动入口函数</span></span><br><span class="line">device_initcall(binder_init);</span><br></pre></td></tr></table></figure>
+
+<p>其他三个方法与应用层的调用关系如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kernel/common/drivers/android/binder.c</span></span><br><span class="line"><span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> <span class="title">binder_fops</span> =</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    .unlocked_ioctl = binder_ioctl,</span><br><span class="line">    .mmap = binder_mmap,</span><br><span class="line">    .open = binder_open,</span><br><span class="line">    ... ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其中 unlocked_ioctl 其实就是 ioctl。所以我们应用层实际调用的是下面三个方法：<br><img src="/images/binder_driver_files/58201170.png" alt="58201170.png"><br>接下来我们一个个分析binder驱动的这几个方法，知道这几个方法的作用后，我们在应用层调用对应方法时就知道在干什么了。</p>
+<h2 id="1-binder-init–驱动设备的初始化"><a href="#1-binder-init–驱动设备的初始化" class="headerlink" title="1.binder_init–驱动设备的初始化"></a>1.binder_init–驱动设备的初始化</h2><p>binder_init 主要是binder驱动的初始化，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kernel/common/drivers/android/binder.c</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> __init <span class="title function_">binder_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ... </span><br><span class="line">    <span class="comment">// 初始化 binder 设备</span></span><br><span class="line">    ret = init_binder_device(device_name);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着我们来看下 init_binder_device 方法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> __init <span class="title function_">init_binder_device</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *name)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ....</span><br><span class="line">    <span class="comment">// 为binder设备分配内存</span></span><br><span class="line">    binder_device = kzalloc(<span class="keyword">sizeof</span>(*binder_device), GFP_KERNEL);</span><br><span class="line">    <span class="keyword">if</span> (!binder_device)</span><br><span class="line">        <span class="keyword">return</span> -ENOMEM;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 注册 Binder 驱动</span></span><br><span class="line">    ret = misc_register(&amp;binder_device-&gt;miscdev);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回注册的驱动    </span></span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结：</p>
+<ol>
+<li>为binder驱动分配内存</li>
+<li>注册binder驱动</li>
+</ol>
+<h2 id="2-binder-open–打开binder驱动"><a href="#2-binder-open–打开binder驱动" class="headerlink" title="2.binder_open–打开binder驱动"></a>2.binder_open–打开binder驱动</h2><p>binder_open就是打开binder驱动，这个在进程创建的时候就会执行，进程都是由zygote创建的，这个过程我们之前已经介绍了，如果对于zygote启动流程不清楚的，可以再去看下那块的流程，这里不再重复介绍了，下来我们只分析相关的代码：<br>进程创建时会调用 onZygoteInit 方法去创建 ProcessState对象：</p>
+<h3 id="2-1-open的执行"><a href="#2-1-open的执行" class="headerlink" title="2-1.open的执行"></a>2-1.open的执行</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/cmds/app_process/app_main.cpp</span></span><br><span class="line">virtual <span class="type">void</span> <span class="title function_">onZygoteInit</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 初始化 ProcessState</span></span><br><span class="line">    sp&lt;ProcessState&gt; proc = ProcessState::self();</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// frameworks/native/libs/binder/ProcessState.cpp</span></span><br><span class="line">sp&lt;ProcessState&gt; <span class="title function_">ProcessState::self</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 单例模式，如果有则直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (gProcess != nullptr) &#123;</span><br><span class="line">        <span class="keyword">return</span> gProcess;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 没有才创建</span></span><br><span class="line">    gProcess = new ProcessState(kDefaultDriver);</span><br><span class="line">    <span class="comment">// 返回</span></span><br><span class="line">    <span class="keyword">return</span> gProcess;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ProcessState::self 这个方法主要做了两件事：</p>
+<ol>
+<li><p>通过单例模式，让每个进程只有一个 ProcessState 对象。</p>
+</li>
+<li><p>传入了一个参数，这个参数就是 ProcessState 准备启动的驱动路径。</p>
+<p>const char* kDefaultDriver &#x3D; “&#x2F;dev&#x2F;binder”;</p>
+</li>
+</ol>
+<p>然后我们接着看下 ProcessState 的构造方法</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">ProcessState::ProcessState(<span class="type">const</span> <span class="type">char</span> *driver)</span><br><span class="line">    : mDriverName(String8(driver))</span><br><span class="line">    , mDriverFD(open_driver(driver))</span><br><span class="line">    , ... ...</span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">if</span> (mDriverFD &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 调用mmap，实现内存映射，最终调用到内核的 binder_mmap 方法</span></span><br><span class="line">        mVMStart = mmap(nullptr, BINDER_VM_SIZE, PROT_READ, MAP_PRIVATE | MAP_NORESERVE, mDriverFD, <span class="number">0</span>);</span><br><span class="line">        ... ...</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">open_driver</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *driver)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 因为 Linux 一切皆文件，所以打开驱动，就跟打开一个文件一样</span></span><br><span class="line">    <span class="comment">// 最终调用到内核的 binder_open 方法</span></span><br><span class="line">    <span class="type">int</span> fd = open(driver, O_RDWR | O_CLOEXEC);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> fd;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-binder-open方法"><a href="#2-2-binder-open方法" class="headerlink" title="2-2.binder_open方法"></a>2-2.binder_open方法</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kernel/common/drivers/android/binder.c</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">binder_open</span><span class="params">(<span class="keyword">struct</span> inode *nodp, <span class="keyword">struct</span> file *filp)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">binder_proc</span> *<span class="title">proc</span>;</span></span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 为 binder_proc结构体 在 kernel分配内存空间</span></span><br><span class="line">    proc = kzalloc(<span class="keyword">sizeof</span>(*proc), GFP_KERNEL);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 初始化 pro 结构体</span></span><br><span class="line">    INIT_LIST_HEAD(&amp;proc-&gt;todo);</span><br><span class="line">    init_waitqueue_head(&amp;proc-&gt;freeze_wait);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 将 binder_proc与 filp关联起来，这样下次通过 filp 就能找到这个 proc了</span></span><br><span class="line">    filp-&gt;private_data = proc;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 将 proc_node 节点添加到 binder_procs 的队列头部</span></span><br><span class="line">    hlist_add_head(&amp;proc-&gt;proc_node, &amp;binder_procs);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>binder_open方法主要做了以下几件事：</p>
+<ol>
+<li>创建binder_proc对象。</li>
+<li>把当前进程等信息保存到binder_proc对象。（该对象管理 IPC 所需的各种信息并拥有其他结构体的根结构体）</li>
+<li>把binder_proc对象保存到文件指针filp，这个文件指针指向的就是 &#x2F;dev&#x2F;binder。</li>
+<li>把binder_proc加入到全局链表binder_procs。</li>
+</ol>
+<p>其实说到底，binder_open就做了一件事，初始化 binder_proc。<br>那么binder_proc是什么呢？可能很多同学不清楚，binder是不是要和很多进程通信？那它怎么区分不同的进程呢？每个进程是不是有自己的不同需求，那它怎么保存呢？其实这些就是通过binder_proc 这个结构体来保存的，所以一个 binder_proc 结构体对应一个进程，保存这个进程的信息，例如，pid、要处理的事务。然后所有进程的 binder_proc 又是以一个双向链表保存的。如下图：<br><img src="https://lingzhiwen.github.io/images/binder_driver_files/72865820.png" alt="72865820.png"></p>
+<h2 id="3-binder-mmap–映射"><a href="#3-binder-mmap–映射" class="headerlink" title="3.binder_mmap–映射"></a>3.binder_mmap–映射</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kernel/common/drivers/android/binder.c</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">binder_mmap</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="keyword">struct</span> vm_area_struct *vma)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 通过文件指针拿到对应进程的 binder_proc 结构体</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">binder_proc</span> *<span class="title">proc</span> =</span> filp-&gt;private_data;</span><br><span class="line">    ... ... </span><br><span class="line">    <span class="keyword">return</span> binder_alloc_mmap_handler(&amp;proc-&gt;alloc, vma);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">binder_alloc_mmap_handler</span><span class="params">(<span class="keyword">struct</span> binder_alloc *alloc,</span></span><br><span class="line"><span class="params">                  <span class="keyword">struct</span> vm_area_struct *vma)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 如果传入的大小大于4M，保证映射内存大小不超过 4M，此处为（1M-8K）</span></span><br><span class="line">    alloc-&gt;buffer_size = <span class="type">min_t</span>(<span class="type">unsigned</span> <span class="type">long</span>, vma-&gt;vm_end - vma-&gt;vm_start,</span><br><span class="line">                   SZ_4M);</span><br><span class="line">   ... ...</span><br><span class="line">    <span class="comment">// 将 proc中的 buffer指针指向这块虚拟内存</span></span><br><span class="line">    alloc-&gt;buffer = (<span class="type">void</span> __user *)vma-&gt;vm_start;</span><br><span class="line">    <span class="comment">// 分配物理内存</span></span><br><span class="line">    alloc-&gt;pages = kcalloc(alloc-&gt;buffer_size / PAGE_SIZE,</span><br><span class="line">                   <span class="keyword">sizeof</span>(alloc-&gt;pages[<span class="number">0</span>]),</span><br><span class="line">                   GFP_KERNEL);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 如果是异步，大小为同步的一半</span></span><br><span class="line">    alloc-&gt;free_async_space = alloc-&gt;buffer_size / <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 把用户空间的虚拟地址保存在alloc里</span></span><br><span class="line">    <span class="comment">// alloc 就是 binder_proc 结构体的一个成员，这样我们就可以随时拿到 vma</span></span><br><span class="line">    binder_alloc_set_vma(alloc, vma);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/binder_driver_files/74579249.png" alt="74579249.png"><br>总结：binder_mmap 做的事情就是，拿到指向用户空间和内核空间的共享内存的指针，并将他们同时指向 同一个物理内存。<br>我们使用这个共享内存的时候，因为这两个指针都在 binder_proc 结构体中，所以随时可以拿到。<br>又因为 指向同一个物理内存，所以内核向指针buffer中存入数据，用户从指针 vma 就可以取出相同数据。</p>
+<h2 id="4-binder-ioctl–数据读写操作"><a href="#4-binder-ioctl–数据读写操作" class="headerlink" title="4.binder_ioctl–数据读写操作"></a>4.binder_ioctl–数据读写操作</h2><p>客户端向服务端发送数据时，在用户层会执行 ioctl，对应的会执行到内核层的 binder_ioctl。<br><img src="/images/binder_driver_files/56256675.png" alt="56256675.png"></p>
+<pre><code>// kernel/common/drivers/android/binder.c
+static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+&#123;
+    // 有很多命令，主要需要关注下面两个
+    switch (cmd) &#123;
+    // 读写操作--使用频率最高
+    case BINDER_WRITE_READ:
+        ret = binder_ioctl_write_read(filp, cmd, arg, thread);
+        ... ...
+        break;
+    // 设置 servicemanager 为全局上下文，这个我们介绍servicemanager时，再具体介绍
+    case BINDER_SET_CONTEXT_MGR_EXT: &#123;
+        ... ...
+        break;
+    &#125;
+    ... ...
+&#125;
+</code></pre>
+<p>这里我们主要分析下 binder_ioctl_write_read 方法。</p>
+<h3 id="4-1-binder-ioctl-write-read"><a href="#4-1-binder-ioctl-write-read" class="headerlink" title="4-1.binder_ioctl_write_read"></a>4-1.binder_ioctl_write_read</h3><pre><code>static int binder_ioctl_write_read(struct file *filp,
+                unsigned int cmd, unsigned long arg,
+                struct binder_thread *thread)
+&#123;
+    // 将用户空间数据 ubuf 拷贝到 bwr
+    if (copy_from_user(&amp;bwr, ubuf, sizeof(bwr))) &#123;
+        ... ...
+    &#125;
+   ... ...
+    // 如果写入数据大于0，执行写入方法
+    if (bwr.write_size &gt; 0) &#123;
+        // 这个方法就会根据不同命令，去执行具体代码
+        ret = binder_thread_write(proc, thread,
+                      bwr.write_buffer,
+                      bwr.write_size,
+                      &amp;bwr.write_consumed);
+        ... ...
+    &#125;
+    // 如果读取数据大于0，执行读取方法
+    if (bwr.read_size &gt; 0) &#123;
+        // 这个方法就会根据不同命令，去执行具体代码
+        ret = binder_thread_read(proc, thread, bwr.read_buffer,
+                     bwr.read_size,
+                     &amp;bwr.read_consumed,
+                     filp-&gt;f_flags &amp; O_NONBLOCK);
+        ... ...
+    &#125;
+    ... ...
+&#125;
+</code></pre>
+<p>可以看出这里面主要就是调用了 binder_thread_write 和 binder_thread_read 方法。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -744,13 +923,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
