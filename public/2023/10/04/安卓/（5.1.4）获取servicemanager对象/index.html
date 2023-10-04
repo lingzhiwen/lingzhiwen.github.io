@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lingzhiwen.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="[TOC] 获取servicemanager对象系统服务向servicemanager注册或者我们应用向servicemanager去获取系统服务时，都需要先获取 servicemanager的代理对象，那么我们这个视频就来介绍，如何获取 servicemanager的代理对象。下面我们以AMS注册为例，在 systemserver 启动时，就会调用 AMS 的 setSystemProcess">
+<meta property="og:type" content="article">
+<meta property="og:title" content="凌波微步的博客院子">
+<meta property="og:url" content="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.4%EF%BC%89%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1/index.html">
+<meta property="og:site_name" content="凌波微步的博客院子">
+<meta property="og:description" content="[TOC] 获取servicemanager对象系统服务向servicemanager注册或者我们应用向servicemanager去获取系统服务时，都需要先获取 servicemanager的代理对象，那么我们这个视频就来介绍，如何获取 servicemanager的代理对象。下面我们以AMS注册为例，在 systemserver 启动时，就会调用 AMS 的 setSystemProcess">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1_files/77485381.png">
+<meta property="article:published_time" content="2023-10-04T03:15:21.741Z">
+<meta property="article:modified_time" content="2023-10-04T03:15:21.741Z">
+<meta property="article:author" content="凌波微步">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lingzhiwen.github.io/images/%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1_files/77485381.png">
+
+<link rel="canonical" href="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.4%EF%BC%89%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | 凌波微步的博客院子</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">凌波微步的博客院子</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.4%EF%BC%89%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="凌波微步">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="凌波微步的博客院子">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-10-04 11:15:21" itemprop="dateCreated datePublished" datetime="2023-10-04T11:15:21+08:00">2023-10-04</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[TOC]</p>
+<h1 id="获取servicemanager对象"><a href="#获取servicemanager对象" class="headerlink" title="获取servicemanager对象"></a>获取servicemanager对象</h1><p>系统服务向servicemanager注册或者我们应用向servicemanager去获取系统服务时，都需要先获取 servicemanager的代理对象，那么我们这个视频就来介绍，如何获取 servicemanager的代理对象。<br>下面我们以AMS注册为例，在 systemserver 启动时，就会调用 AMS 的 setSystemProcess 方法，AMS就是通过该方法向servicemanager注册的。如果对 systemserver启动来不了解的同学，可以先去学习 systemserver 的启动流程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSystemProcess</span><span class="params">()</span> &#123;</span><br><span class="line">    ... ... </span><br><span class="line">    <span class="comment">// 将 AMS 注册到 servicemanager 中</span></span><br><span class="line">    ServiceManager.addService(Context.ACTIVITY_SERVICE, <span class="built_in">this</span>, <span class="comment">/* allowIsolated= */</span> <span class="literal">true</span>,</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManager.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, <span class="type">boolean</span> allowIsolated,</span></span><br><span class="line"><span class="params">            <span class="type">int</span> dumpPriority)</span> &#123;</span><br><span class="line">    getIServiceManager().addService(name, service, allowIsolated, dumpPriority);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 getIServiceManager 方法就是获取 servicemanager 的代理对象，也是我们这节课要分析的，addService 方法我们后续再分析。</p>
+<h2 id="1-getIServiceManager"><a href="#1-getIServiceManager" class="headerlink" title="1.getIServiceManager"></a>1.getIServiceManager</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManager.java</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> IServiceManager <span class="title function_">getIServiceManager</span><span class="params">()</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    sServiceManager = ServiceManagerNative</span><br><span class="line">                .asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ServiceManagerNative.asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));这个方法我们又需要分为两块分析，一个是方法体，一个是参数，如下：</p>
+<ol>
+<li>ServiceManagerNative.asInterface 是如何返回 servicemanager 的代理对象的</li>
+<li>Binder.allowBlocking(BinderInternal.getContextObject()) 这个方法参数到底是什么呢？</li>
+</ol>
+<p>我们首先分析方法的参数到底是什么？再来分析方法体。</p>
+<h2 id="2-Binder-allowBlocking-BinderInternal-getContextObject"><a href="#2-Binder-allowBlocking-BinderInternal-getContextObject" class="headerlink" title="2.Binder.allowBlocking(BinderInternal.getContextObject())"></a>2.Binder.allowBlocking(BinderInternal.getContextObject())</h2><p>Binder.allowBlocking 这个方法很简单，就是返回它的参数，所以Binder.allowBlocking(BinderInternal.getContextObject())具体返回什么，就只需要看 BinderInternal.getContextObject() 就行了。<br>BinderInternal.getContextObject() 实际是一个 native 方法，所以我们直接找到实际方法，如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line"><span class="keyword">static</span> jobject <span class="title function_">android_os_BinderInternal_getContextObject</span><span class="params">(JNIEnv* env, jobject clazz)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 通过 ProcessState 的方法，创建 BpBinder 对象，并返回</span></span><br><span class="line">    sp&lt;IBinder&gt; b = ProcessState::self()-&gt;getContextObject(NULL);</span><br><span class="line">    <span class="comment">// 创建 BinderProxy对象并返回，并将 BinderProxy 和 BpBinder 绑定</span></span><br><span class="line">    <span class="keyword">return</span> javaObjectForIBinder(env, b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-ProcessState-self-getContextObject"><a href="#2-1-ProcessState-self-getContextObject" class="headerlink" title="2-1.ProcessState::self()-&gt;getContextObject"></a>2-1.ProcessState::self()-&gt;getContextObject</h3><p>我们先来分析 ProcessState::self()-&gt;getContextObject 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/ProcessState.cpp</span></span><br><span class="line">sp&lt;IBinder&gt; ProcessState::getContextObject(const sp&lt;IBinder&gt;&amp; <span class="comment">/*caller*/</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 获取 handle 为 0 的代理对象</span></span><br><span class="line">    sp&lt;IBinder&gt; context = getStrongProxyForHandle(<span class="number">0</span>);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> context;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code>sp&lt;IBinder&gt; ProcessState::getStrongProxyForHandle(int32_t handle)
+&#123;
+    ... ...
+    b = BpBinder::create(handle);
+    ... ...
+&#125;
+</code></pre>
+<p>这个地方我们需要注意，创建 BpBinder对象时，传入的handle为0，就像门牌号一样，这个是规定的，为0 就表示找的是 servicemanager 的代理对象。</p>
+<h3 id="2-2-javaObjectForIBinder"><a href="#2-2-javaObjectForIBinder" class="headerlink" title="2-2.javaObjectForIBinder"></a>2-2.javaObjectForIBinder</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line">jobject <span class="title function_">javaObjectForIBinder</span><span class="params">(JNIEnv* env, const sp&lt;IBinder&gt;&amp; val)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 实际就是执行 BinderProxy的 getInstance方法</span></span><br><span class="line">    <span class="type">jobject</span> <span class="variable">object</span> <span class="operator">=</span> env-&gt;CallStaticObjectMethod(gBinderProxyOffsets.mClass,</span><br><span class="line">            gBinderProxyOffsets.mGetInstance, (jlong) nativeData, (jlong) val.get());</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/BinderProxy.java</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> BinderProxy <span class="title function_">getInstance</span><span class="params">(<span class="type">long</span> nativeData, <span class="type">long</span> iBinder)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 创建 BinderProxy 对象</span></span><br><span class="line">    result = <span class="keyword">new</span> <span class="title class_">BinderProxy</span>(nativeData);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 将 BinderProxy 和 iBinder 绑定，iBinder实际就是 BpBinder</span></span><br><span class="line">    sProxyMap.set(iBinder, result);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回 BinderProxy</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-总结"><a href="#2-3-总结" class="headerlink" title="2-3.总结"></a>2-3.总结</h3><p>通过分析可知，Binder.allowBlocking(BinderInternal.getContextObject()) 实际就是创建了 BpBinder 和 BinderProxy，并将二者关联，然后返回 BinderProxy 对象。</p>
+<h2 id="3-ServiceManagerNative-asInterface"><a href="#3-ServiceManagerNative-asInterface" class="headerlink" title="3.ServiceManagerNative.asInterface"></a>3.ServiceManagerNative.asInterface</h2><p>我们再来分析 ServiceManagerNative.asInterface 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManagerNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> IServiceManager <span class="title function_">asInterface</span><span class="params">(IBinder obj)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回 ServiceManagerProxy 对象，obj 为 BinderProxy 对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ServiceManagerProxy</span>(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这儿我们就拿到了每一个层级的 servicemanager 的代理对象，如下图：<br><img src="https://lingzhiwen.github.io/images/%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1_files/77485381.png" alt="77485381.png"><br>应用层为：ServiceManagerProxy<br>Framework层为：BinderProxy<br>native层为：BpBinder<br>内核层代理为：binder_ref 结构体<br>内核层实体为：binder_node 结构体</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.2%EF%BC%89binder%E9%A9%B1%E5%8A%A8/" rel="prev" title="binder驱动">
+      <i class="fa fa-chevron-left"></i> binder驱动
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.3%EF%BC%89%E5%90%AF%E5%8A%A8servicemanager/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.</span> <span class="nav-text">获取servicemanager对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-getIServiceManager"><span class="nav-number">1.1.</span> <span class="nav-text">1.getIServiceManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Binder-allowBlocking-BinderInternal-getContextObject"><span class="nav-number">1.2.</span> <span class="nav-text">2.Binder.allowBlocking(BinderInternal.getContextObject())</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-ProcessState-self-getContextObject"><span class="nav-number">1.2.1.</span> <span class="nav-text">2-1.ProcessState::self()-&gt;getContextObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-javaObjectForIBinder"><span class="nav-number">1.2.2.</span> <span class="nav-text">2-2.javaObjectForIBinder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E6%80%BB%E7%BB%93"><span class="nav-number">1.2.3.</span> <span class="nav-text">2-3.总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ServiceManagerNative-asInterface"><span class="nav-number">1.3.</span> <span class="nav-text">3.ServiceManagerNative.asInterface</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">凌波微步</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">凌波微步</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'bf37a6341f2fc4e68d60',
+      clientSecret: '2cb255975031412007c42f102073727121d42ec4',
+      repo        : 'blogComment',
+      owner       : 'lingzhiwen',
+      admin       : ['lingzhiwen'],
+      id          : 'e929680921699f867bb12825f31be2c4',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
