@@ -159,9 +159,6 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-              <span class="post-sticky-flag" title="置顶">
-                <i class="fa fa-thumbtack"></i>
-              </span>
             <a href="/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.2%EF%BC%89binder%E9%A9%B1%E5%8A%A8/" class="post-title-link" itemprop="url">binder驱动</a>
         </h2>
 
@@ -318,7 +315,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.3%EF%BC%89%E5%90%AF%E5%8A%A8servicemanager/">
+    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/03/%E5%AE%89%E5%8D%93/%EF%BC%885.1.3%EF%BC%89%E5%90%AF%E5%8A%A8servicemanager/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -332,10 +329,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-              <span class="post-sticky-flag" title="置顶">
-                <i class="fa fa-thumbtack"></i>
-              </span>
-            <a href="/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.3%EF%BC%89%E5%90%AF%E5%8A%A8servicemanager/" class="post-title-link" itemprop="url">启动Servicemanager</a>
+            <a href="/2023/10/03/%E5%AE%89%E5%8D%93/%EF%BC%885.1.3%EF%BC%89%E5%90%AF%E5%8A%A8servicemanager/" class="post-title-link" itemprop="url">启动Servicemanager</a>
         </h2>
 
         <div class="post-meta">
@@ -384,7 +378,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 <li>成为上下文的管理者，这样所有的进程都可以获取到它</li>
 <li>循环等待服务的注册</li>
 </ol>
-<h2 id="x32-46-109-x61-x69-110-64-109-97-105-x6e-x2e-x63-112-112"><a href="#x32-46-109-x61-x69-110-64-109-97-105-x6e-x2e-x63-112-112" class="headerlink" title="&#x32;&#46;&#109;&#x61;&#x69;&#110;&#64;&#109;&#97;&#105;&#x6e;&#x2e;&#x63;&#112;&#112;"></a><a href="mailto:&#x32;&#46;&#109;&#x61;&#x69;&#110;&#64;&#109;&#97;&#105;&#x6e;&#x2e;&#x63;&#112;&#112;">&#x32;&#46;&#109;&#x61;&#x69;&#110;&#64;&#109;&#97;&#105;&#x6e;&#x2e;&#x63;&#112;&#112;</a></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/cmds/servicemanager/main.cpp</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* driver = argc == <span class="number">2</span> ? argv[<span class="number">1</span>] : <span class="string">&quot;/dev/binder&quot;</span>;</span><br><span class="line">    <span class="comment">// 1.打开binder驱动</span></span><br><span class="line">    sp&lt;ProcessState&gt; ps = ProcessState::initWithDriver(driver);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 2.成为上下文的管理者，这样所有的进程都可以获取到它</span></span><br><span class="line">    ps-&gt;becomeContextManager(nullptr, nullptr);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 3.将binder回调设置到 looper中</span></span><br><span class="line">    BinderCallback::setupTo(looper);</span><br><span class="line">    <span class="comment">// 4.循环处理服务的注册，例如AMS、WMS等的注册</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">        looper-&gt;pollAll(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="50-46-109-97-105-x6e-x40-109-x61-105-x6e-46-99-x70-112"><a href="#50-46-109-97-105-x6e-x40-109-x61-105-x6e-46-99-x70-112" class="headerlink" title="&#50;&#46;&#109;&#97;&#105;&#x6e;&#x40;&#109;&#x61;&#105;&#x6e;&#46;&#99;&#x70;&#112;"></a><a href="mailto:&#50;&#46;&#109;&#97;&#105;&#x6e;&#x40;&#109;&#x61;&#105;&#x6e;&#46;&#99;&#x70;&#112;">&#50;&#46;&#109;&#97;&#105;&#x6e;&#x40;&#109;&#x61;&#105;&#x6e;&#46;&#99;&#x70;&#112;</a></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/cmds/servicemanager/main.cpp</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* driver = argc == <span class="number">2</span> ? argv[<span class="number">1</span>] : <span class="string">&quot;/dev/binder&quot;</span>;</span><br><span class="line">    <span class="comment">// 1.打开binder驱动</span></span><br><span class="line">    sp&lt;ProcessState&gt; ps = ProcessState::initWithDriver(driver);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 2.成为上下文的管理者，这样所有的进程都可以获取到它</span></span><br><span class="line">    ps-&gt;becomeContextManager(nullptr, nullptr);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 3.将binder回调设置到 looper中</span></span><br><span class="line">    BinderCallback::setupTo(looper);</span><br><span class="line">    <span class="comment">// 4.循环处理服务的注册，例如AMS、WMS等的注册</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">        looper-&gt;pollAll(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="2-1-ProcessState-initWithDriver–打开binder驱动"><a href="#2-1-ProcessState-initWithDriver–打开binder驱动" class="headerlink" title="2-1.ProcessState::initWithDriver–打开binder驱动"></a>2-1.ProcessState::initWithDriver–打开binder驱动</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/ProcessState.cpp</span></span><br><span class="line">sp&lt;ProcessState&gt; <span class="title function_">ProcessState::initWithDriver</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* driver)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 初始化 ProcessState 对象，这个里面就会调用到binder_open方法，打开驱动</span></span><br><span class="line">    gProcess = new ProcessState(driver);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ProcessState::ProcessState(<span class="type">const</span> <span class="type">char</span> *driver)</span><br><span class="line">    : mDriverName(String8(driver))</span><br><span class="line">    , mDriverFD(open_driver(driver))</span><br><span class="line">    , ... ...</span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">if</span> (mDriverFD &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 调用mmap，实现内存映射，最终调用到内核的 binder_mmap 方法</span></span><br><span class="line">        mVMStart = mmap(nullptr, BINDER_VM_SIZE, PROT_READ, MAP_PRIVATE | MAP_NORESERVE, mDriverFD, <span class="number">0</span>);</span><br><span class="line">        ... ...</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -416,240 +410,6 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">binder_thread_read</span><span class="params">(<span class="keyword">struct</span> binder_proc *proc,</span></span><br><span class="line"><span class="params">                  <span class="keyword">struct</span> binder_thread *thread,</span></span><br><span class="line"><span class="params">                  <span class="type">binder_uintptr_t</span> binder_buffer, <span class="type">size_t</span> size,</span></span><br><span class="line"><span class="params">                  <span class="type">binder_size_t</span> *consumed, <span class="type">int</span> non_block)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 阻塞，等待其他服务注册</span></span><br><span class="line">    ret = binder_wait_for_work(thread, wait_for_proc_work);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>接下来就是等待客户端来注册，当然这儿所说的客户端就是 AMS、WMS等服务，相对于servicemanager来说，一切皆是客户端。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.4%EF%BC%89%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="凌波微步">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="凌波微步的博客院子">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-              <span class="post-sticky-flag" title="置顶">
-                <i class="fa fa-thumbtack"></i>
-              </span>
-            <a href="/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.4%EF%BC%89%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1/" class="post-title-link" itemprop="url">获取ServiceManager对象</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">Framework内核解析</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/IPC-Binder%E6%9C%BA%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">IPC Binder机制</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="获取ServiceManager对象"><a href="#获取ServiceManager对象" class="headerlink" title="获取ServiceManager对象"></a>获取ServiceManager对象</h1><p>系统服务向servicemanager注册或者我们应用向servicemanager去获取系统服务时，都需要先获取 servicemanager的代理对象，那么我们这个视频就来介绍，如何获取 servicemanager的代理对象。<br>下面我们以AMS注册为例，在 systemserver 启动时，就会调用 AMS 的 setSystemProcess 方法，AMS就是通过该方法向servicemanager注册的。如果对 systemserver启动来不了解的同学，可以先去学习 systemserver 的启动流程。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSystemProcess</span><span class="params">()</span> &#123;</span><br><span class="line">    ... ... </span><br><span class="line">    <span class="comment">// 将 AMS 注册到 servicemanager 中</span></span><br><span class="line">    ServiceManager.addService(Context.ACTIVITY_SERVICE, <span class="built_in">this</span>, <span class="comment">/* allowIsolated= */</span> <span class="literal">true</span>,</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManager.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, <span class="type">boolean</span> allowIsolated,</span></span><br><span class="line"><span class="params">            <span class="type">int</span> dumpPriority)</span> &#123;</span><br><span class="line">    getIServiceManager().addService(name, service, allowIsolated, dumpPriority);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中 getIServiceManager 方法就是获取 servicemanager 的代理对象，也是我们这节课要分析的，addService 方法我们后续再分析。</p>
-<h2 id="1-getIServiceManager"><a href="#1-getIServiceManager" class="headerlink" title="1.getIServiceManager"></a>1.getIServiceManager</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManager.java</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> IServiceManager <span class="title function_">getIServiceManager</span><span class="params">()</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    sServiceManager = ServiceManagerNative</span><br><span class="line">                .asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>ServiceManagerNative.asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));这个方法我们又需要分为两块分析，一个是方法体，一个是参数，如下：</p>
-<ol>
-<li>ServiceManagerNative.asInterface 是如何返回 servicemanager 的代理对象的</li>
-<li>Binder.allowBlocking(BinderInternal.getContextObject()) 这个方法参数到底是什么呢？</li>
-</ol>
-<p>我们首先分析方法的参数到底是什么？再来分析方法体。</p>
-<h2 id="2-Binder-allowBlocking-BinderInternal-getContextObject"><a href="#2-Binder-allowBlocking-BinderInternal-getContextObject" class="headerlink" title="2.Binder.allowBlocking(BinderInternal.getContextObject())"></a>2.Binder.allowBlocking(BinderInternal.getContextObject())</h2><p>Binder.allowBlocking 这个方法很简单，就是返回它的参数，所以Binder.allowBlocking(BinderInternal.getContextObject())具体返回什么，就只需要看 BinderInternal.getContextObject() 就行了。<br>BinderInternal.getContextObject() 实际是一个 native 方法，所以我们直接找到实际方法，如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line"><span class="keyword">static</span> jobject <span class="title function_">android_os_BinderInternal_getContextObject</span><span class="params">(JNIEnv* env, jobject clazz)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 通过 ProcessState 的方法，创建 BpBinder 对象，并返回</span></span><br><span class="line">    sp&lt;IBinder&gt; b = ProcessState::self()-&gt;getContextObject(NULL);</span><br><span class="line">    <span class="comment">// 创建 BinderProxy对象并返回，并将 BinderProxy 和 BpBinder 绑定</span></span><br><span class="line">    <span class="keyword">return</span> javaObjectForIBinder(env, b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-1-ProcessState-self-getContextObject"><a href="#2-1-ProcessState-self-getContextObject" class="headerlink" title="2-1.ProcessState::self()-&gt;getContextObject"></a>2-1.ProcessState::self()-&gt;getContextObject</h3><p>我们先来分析 ProcessState::self()-&gt;getContextObject 方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/ProcessState.cpp</span></span><br><span class="line">sp&lt;IBinder&gt; ProcessState::getContextObject(const sp&lt;IBinder&gt;&amp; <span class="comment">/*caller*/</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 获取 handle 为 0 的代理对象</span></span><br><span class="line">    sp&lt;IBinder&gt; context = getStrongProxyForHandle(<span class="number">0</span>);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> context;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<pre><code>sp&lt;IBinder&gt; ProcessState::getStrongProxyForHandle(int32_t handle)
-&#123;
-    ... ...
-    b = BpBinder::create(handle);
-    ... ...
-&#125;
-</code></pre>
-<p>这个地方我们需要注意，创建 BpBinder对象时，传入的handle为0，就像门牌号一样，这个是规定的，为0 就表示找的是 servicemanager 的代理对象。</p>
-<h3 id="2-2-javaObjectForIBinder"><a href="#2-2-javaObjectForIBinder" class="headerlink" title="2-2.javaObjectForIBinder"></a>2-2.javaObjectForIBinder</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line">jobject <span class="title function_">javaObjectForIBinder</span><span class="params">(JNIEnv* env, const sp&lt;IBinder&gt;&amp; val)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 实际就是执行 BinderProxy的 getInstance方法</span></span><br><span class="line">    <span class="type">jobject</span> <span class="variable">object</span> <span class="operator">=</span> env-&gt;CallStaticObjectMethod(gBinderProxyOffsets.mClass,</span><br><span class="line">            gBinderProxyOffsets.mGetInstance, (jlong) nativeData, (jlong) val.get());</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/BinderProxy.java</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> BinderProxy <span class="title function_">getInstance</span><span class="params">(<span class="type">long</span> nativeData, <span class="type">long</span> iBinder)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 创建 BinderProxy 对象</span></span><br><span class="line">    result = <span class="keyword">new</span> <span class="title class_">BinderProxy</span>(nativeData);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 将 BinderProxy 和 iBinder 绑定，iBinder实际就是 BpBinder</span></span><br><span class="line">    sProxyMap.set(iBinder, result);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回 BinderProxy</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-3-总结"><a href="#2-3-总结" class="headerlink" title="2-3.总结"></a>2-3.总结</h3><p>通过分析可知，Binder.allowBlocking(BinderInternal.getContextObject()) 实际就是创建了 BpBinder 和 BinderProxy，并将二者关联，然后返回 BinderProxy 对象。</p>
-<h2 id="3-ServiceManagerNative-asInterface"><a href="#3-ServiceManagerNative-asInterface" class="headerlink" title="3.ServiceManagerNative.asInterface"></a>3.ServiceManagerNative.asInterface</h2><p>我们再来分析 ServiceManagerNative.asInterface 方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManagerNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> IServiceManager <span class="title function_">asInterface</span><span class="params">(IBinder obj)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回 ServiceManagerProxy 对象，obj 为 BinderProxy 对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ServiceManagerProxy</span>(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>到这儿我们就拿到了每一个层级的 servicemanager 的代理对象，如下图：<br><img src="https://lingzhiwen.github.io/images/%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1_files/77485381.png" alt="77485381.png"><br>应用层为：ServiceManagerProxy<br>Framework层为：BinderProxy<br>native层为：BpBinder<br>内核层代理为：binder_ref 结构体<br>内核层实体为：binder_node 结构体</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.5%EF%BC%89%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="凌波微步">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="凌波微步的博客院子">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-              <span class="post-sticky-flag" title="置顶">
-                <i class="fa fa-thumbtack"></i>
-              </span>
-            <a href="/2023/10/04/%E5%AE%89%E5%8D%93/%EF%BC%885.1.5%EF%BC%89%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96/" class="post-title-link" itemprop="url">注册服务</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">Framework内核解析</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/IPC-Binder%E6%9C%BA%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">IPC Binder机制</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="注册服务"><a href="#注册服务" class="headerlink" title="注册服务"></a>注册服务</h1><p>我们以AMS注册为例，在 systemserver 启动时，就会调用 AMS 的 setSystemProcess 方法，AMS就是通过该方法向servicemanager注册的。如果对 systemserver启动还不了解的同学，可以先去学习 systemserver 的启动流程。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</span></span><br><span class="line">public <span class="type">void</span> <span class="title function_">setSystemProcess</span><span class="params">()</span> &#123;</span><br><span class="line">    ... ... </span><br><span class="line">    <span class="comment">// 将 AMS 注册到 servicemanager 中</span></span><br><span class="line">    ServiceManager.addService(Context.ACTIVITY_SERVICE, this, <span class="comment">/* allowIsolated= */</span> <span class="literal">true</span>,</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManager.java</span></span><br><span class="line">public <span class="type">static</span> <span class="type">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, boolean allowIsolated,</span></span><br><span class="line"><span class="params">            <span class="type">int</span> dumpPriority)</span> &#123;</span><br><span class="line">    getIServiceManager().addService(name, service, allowIsolated, dumpPriority);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>getIServiceManager 我们前一节课已经分析了，可以理解为执行了 new ServiceManagerProxy(参数为BinderProxy对象);<br>我们在看 addService 方法前，我们先来看下 ServiceManagerProxy 的构造方法做了什么。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManagerNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">ServiceManagerProxy</span><span class="params">(IBinder remote)</span> &#123;</span><br><span class="line">    mRemote = remote;</span><br><span class="line">    mServiceManager = IServiceManager.Stub.asInterface(remote);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到这个地方使用了 AIDL，根据AIDL的理解还是可以知道，实际就是返回了一个Proxy对象，然后 remote &#x3D; BinderProxy。<br>接着我们再来看 addService 方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManagerNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, <span class="type">boolean</span> allowIsolated, <span class="type">int</span> dumpPriority)</span></span><br><span class="line">            <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">    mServiceManager.addService(name, service, allowIsolated, dumpPriority);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个方法就会执行到 AIDL对应的 Proxy.addService 方法，根据我们前面介绍的AIDL，我们可以知道生成的AIDL代码，如下：<br>这个方法里面就会执行 mRemote.transact，也就是执行 BinderProxy.transact。所以接着我们来分析下 BinderProxy.transact 方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, <span class="type">boolean</span> allowIsolated, <span class="type">int</span> dumpPriority)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">    <span class="type">Parcel</span> <span class="variable">data</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">    <span class="type">Parcel</span> <span class="variable">reply</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 此处 service == AMS</span></span><br><span class="line">    data.writeStrongBinder(service);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 实际就是执行 BinderProxy.transact</span></span><br><span class="line">    mRemote.transact(ADD_SERVICE_TRANSACTION, data, reply, <span class="number">0</span>);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>接下来我们分别分析 <code>data.writeStrongBinder(service);</code> 和 <code>mRemote.transact</code> 这两个方法。</p>
-<h2 id="1-data-writeStrongBinder"><a href="#1-data-writeStrongBinder" class="headerlink" title="1.data.writeStrongBinder"></a>1.data.writeStrongBinder</h2><p>这个方法实际就是调用一个native方法，最终进入jni层，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_os_Parcel.cpp</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">android_os_Parcel_writeStrongBinder</span><span class="params">(JNIEnv* env, jclass clazz, jlong nativePtr, jobject object)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 创建  JavaBBinder 对象，并保存在本地</span></span><br><span class="line">    <span class="comment">// 下面分别介绍这个方法和参数</span></span><br><span class="line">    const <span class="type">status_t</span> <span class="variable">err</span> <span class="operator">=</span> parcel-&gt;writeStrongBinder(ibinderForJavaObject(env, object));</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-1-参数：ibinderForJavaObject"><a href="#1-1-参数：ibinderForJavaObject" class="headerlink" title="1-1.参数：ibinderForJavaObject"></a>1-1.参数：ibinderForJavaObject</h3><p>这个方法的作用是创建 JavaBBinder 对象</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line">sp&lt;IBinder&gt; <span class="title function_">ibinderForJavaObject</span><span class="params">(JNIEnv* env, jobject obj)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 获取 JavaBBinderHolder 对象</span></span><br><span class="line">    JavaBBinderHolder* jbh = (JavaBBinderHolder*)</span><br><span class="line">            env-&gt;GetLongField(obj, gBinderOffsets.mObject);</span><br><span class="line">    <span class="comment">// 获取 JavaBBinder 对象</span></span><br><span class="line">    <span class="keyword">return</span> jbh-&gt;get(env, obj);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line">sp&lt;JavaBBinder&gt; <span class="title function_">get</span><span class="params">(JNIEnv* env, jobject obj)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 创建 JavaBBinder对象</span></span><br><span class="line">    b = new JavaBBinder(env, obj);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回 JavaBBinder 对象</span></span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-2-方法：parcel-writeStrongBinder"><a href="#1-2-方法：parcel-writeStrongBinder" class="headerlink" title="1-2.方法：parcel-&gt;writeStrongBinder"></a>1-2.方法：parcel-&gt;writeStrongBinder</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数为 JavaBBinder</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">Parcel::writeStrongBinder</span><span class="params">(<span class="type">const</span> sp&lt;IBinder&gt;&amp; val)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> flattenBinder(val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数为 JavaBBinder</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">Parcel::flattenBinder</span><span class="params">(<span class="type">const</span> sp&lt;IBinder&gt;&amp; binder)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 通过 JavaBBinder 获取 BBinder</span></span><br><span class="line">    BBinder *local = binder-&gt;localBinder();</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-BinderProxy-transact"><a href="#2-BinderProxy-transact" class="headerlink" title="2.BinderProxy.transact"></a>2.BinderProxy.transact</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public boolean <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> throws RemoteException &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 这是一个native方法</span></span><br><span class="line">    <span class="keyword">return</span> transactNative(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>transactNative 是一个 native 方法，会执行 android_util_Binder.cpp 中的 android_os_BinderProxy_transact 方法：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line"><span class="type">static</span> jboolean <span class="title function_">android_os_BinderProxy_transact</span><span class="params">(JNIEnv* env, jobject obj,</span></span><br><span class="line"><span class="params">        jint code, jobject dataObj, jobject replyObj, jint flags)</span> <span class="comment">// throws RemoteException</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 获取 BpBinder 对象</span></span><br><span class="line">    IBinder* target = getBPNativeData(env, obj)-&gt;mObject.get();</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 执行 BpBinder.transact</span></span><br><span class="line">    <span class="type">status_t</span> err = target-&gt;transact(code, *data, reply, flags);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-1-BpBinder-transact"><a href="#2-1-BpBinder-transact" class="headerlink" title="2-1.BpBinder.transact"></a>2-1.BpBinder.transact</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/BpBinder.cpp</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">BpBinder::transact</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="type">uint32_t</span> code, <span class="type">const</span> Parcel&amp; data, Parcel* reply, <span class="type">uint32_t</span> flags)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">status_t</span> status = IPCThreadState::self()-&gt;transact(</span><br><span class="line">            mHandle, code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/IPCThreadState.cpp</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">IPCThreadState::transact</span><span class="params">(<span class="type">int32_t</span> handle,</span></span><br><span class="line"><span class="params">                                  <span class="type">uint32_t</span> code, <span class="type">const</span> Parcel&amp; data,</span></span><br><span class="line"><span class="params">                                  Parcel* reply, <span class="type">uint32_t</span> flags)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 写入命令 BC_TRANSACTION</span></span><br><span class="line">    err = writeTransactionData(BC_TRANSACTION, flags, handle, code, data, nullptr);</span><br><span class="line">    <span class="comment">// 类似于网络请求中的 request，最终会执行 ioctl 方法</span></span><br><span class="line">    err = waitForResponse(reply);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>根据我们前面课程的内容，可以知道，ioctl最终会调用到两个方法，一个是 binder_thread_write，一个是 binder_thread_read，如下图：<br><img src="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/f0bb73ba-2d8f-4739-8093-cfe61f6c29f8.png" alt="f0bb73ba-2d8f-4739-8093-cfe61f6c29f8.png"><br>这两个方法就是根据不同的命令，也叫协议，来进行不同的处理的，一次完整的通信协议如下图：</p>
-<p><img src="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/4d20efa9-d0b9-4d0c-a371-0b5e35b96b6b.jpeg" alt="4d20efa9-d0b9-4d0c-a371-0b5e35b96b6b.jpeg"><br>Binder协议包含在IPC数据中，分为两类:</p>
-<ol>
-<li>BINDER_COMMAND_PROTOCOL：binder请求码，以”BC_“开头，简称BC码，用于从IPC层传递到Binder Driver层；</li>
-<li>BINDER_RETURN_PROTOCOL ：binder响应码，以”BR_“开头，简称BR码，用于从Binder Driver层传递到IPC层；</li>
-</ol>
-<p>上面我们已经写入了 BC_TRANSACTION 命令，然后通过 binder_thread_write 方法，就会将这个命令发给 binder驱动处理，binder驱动 会先返回一个 BR_TRANSACTION_COMPLETE 命令，让 AMS客户端 挂起，然后将客户端发过来的数据放到内核和服务端的内存共享区域，这样服务端就也能获取到数据了，然后通过 binder_thread_read 方法，向 servicemanager服务端 发送 BR_TRANSACTION 命令，唤醒 servicemanager服务端，servicemanager服务端就会处理该命令，执行如下代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/IPCThreadState.cpp</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">IPCThreadState::executeCommand</span><span class="params">(<span class="type">int32_t</span> cmd)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">switch</span> ((<span class="type">uint32_t</span>)cmd) &#123;</span><br><span class="line">        ... ...</span><br><span class="line">        <span class="keyword">case</span> BR_TRANSACTION:</span><br><span class="line">        &#123;</span><br><span class="line">            ... ...</span><br><span class="line">            <span class="comment">// the_context_object 就是 ServiceManager</span></span><br><span class="line">            error = the_context_object-&gt;transact(tr.code, buffer, &amp;reply, tr.flags);</span><br><span class="line">            ... ...</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>ServiceManager.transact 方法最终会调用到 ServiceManager 的 addService 方法，如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">frameworks/native/cmds/servicemanager/ServiceManager.cpp</span><br><span class="line">Status <span class="title function_">ServiceManager::addService</span><span class="params">(<span class="type">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name, <span class="type">const</span> sp&lt;IBinder&gt;&amp; binder, <span class="type">bool</span> allowIsolated, <span class="type">int32_t</span> dumpPriority)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 将服务按名称 保存在 mNameToService 中</span></span><br><span class="line">    mNameToService[name] = Service &#123;</span><br><span class="line">        .binder = binder,</span><br><span class="line">        .allowIsolated = allowIsolated,</span><br><span class="line">        .dumpPriority = dumpPriority,</span><br><span class="line">        .debugPid = ctx.debugPid,</span><br><span class="line">    &#125;;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="获取服务"><a href="#获取服务" class="headerlink" title="获取服务"></a>获取服务</h1><p>获取服务的流程与添加服务的流程类似，这里就不再赘述了，最终会调用 ServiceManager 的 getService 方法，如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/cmds/servicemanager/ServiceManager.cpp</span></span><br><span class="line">Status <span class="title function_">ServiceManager::getService</span><span class="params">(<span class="type">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name, sp&lt;IBinder&gt;* outBinder)</span> &#123;</span><br><span class="line">    *outBinder = tryGetService(name, <span class="literal">true</span>);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sp&lt;IBinder&gt; <span class="title function_">ServiceManager::tryGetService</span><span class="params">(<span class="type">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name, <span class="type">bool</span> startIfNotFound)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    sp&lt;IBinder&gt; out;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 根据名称，找到对应的服务，然后返回</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">auto</span> it = mNameToService.find(name); it != mNameToService.end()) &#123;</span><br><span class="line">        service = &amp;(it-&gt;second);</span><br><span class="line">        ... ...</span><br><span class="line">        out = service-&gt;binder;</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> out;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><img src="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/f9e0a58d-3762-4424-b372-17edb50b688e.png" alt="f9e0a58d-3762-4424-b372-17edb50b688e.png"><br>接下来我们总结下这几节课的整个流程：</p>
-<ol>
-<li>servicemanager 启动时，会将自己设置为大管家，这样所有的客户端都可以通过handle为0，找到servicemanager服务。</li>
-<li>AMS注册服务，首先AMS会获取servicemanager的binder代理对象，然后将自己的binder代理传给servicemanager。</li>
-<li>用户APP获取AMS服务，首先会获取servicemanager的binder代理对象，然后通过servicemanager拿到AMS的binder代理对象。然后用户APP就可以通过AMS这个代理对象与AMS进行通信了。</li>
-</ol>
 
       
     </div>
@@ -1141,6 +901,234 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
           <p>安装 Homebrew：</p>
 <p>打开终端，然后运行以下命令来安装 Homebrew。这个命令将安装 Homebrew 并设置中国镜像源：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -c &quot;$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%AE%89%E5%8D%93/%EF%BC%885.1.4%EF%BC%89%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="凌波微步">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="凌波微步的博客院子">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/10/02/%E5%AE%89%E5%8D%93/%EF%BC%885.1.4%EF%BC%89%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1/" class="post-title-link" itemprop="url">获取ServiceManager对象</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">Framework内核解析</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/IPC-Binder%E6%9C%BA%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">IPC Binder机制</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="获取ServiceManager对象"><a href="#获取ServiceManager对象" class="headerlink" title="获取ServiceManager对象"></a>获取ServiceManager对象</h1><p>系统服务向servicemanager注册或者我们应用向servicemanager去获取系统服务时，都需要先获取 servicemanager的代理对象，那么我们这个视频就来介绍，如何获取 servicemanager的代理对象。<br>下面我们以AMS注册为例，在 systemserver 启动时，就会调用 AMS 的 setSystemProcess 方法，AMS就是通过该方法向servicemanager注册的。如果对 systemserver启动来不了解的同学，可以先去学习 systemserver 的启动流程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSystemProcess</span><span class="params">()</span> &#123;</span><br><span class="line">    ... ... </span><br><span class="line">    <span class="comment">// 将 AMS 注册到 servicemanager 中</span></span><br><span class="line">    ServiceManager.addService(Context.ACTIVITY_SERVICE, <span class="built_in">this</span>, <span class="comment">/* allowIsolated= */</span> <span class="literal">true</span>,</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManager.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, <span class="type">boolean</span> allowIsolated,</span></span><br><span class="line"><span class="params">            <span class="type">int</span> dumpPriority)</span> &#123;</span><br><span class="line">    getIServiceManager().addService(name, service, allowIsolated, dumpPriority);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 getIServiceManager 方法就是获取 servicemanager 的代理对象，也是我们这节课要分析的，addService 方法我们后续再分析。</p>
+<h2 id="1-getIServiceManager"><a href="#1-getIServiceManager" class="headerlink" title="1.getIServiceManager"></a>1.getIServiceManager</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManager.java</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> IServiceManager <span class="title function_">getIServiceManager</span><span class="params">()</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    sServiceManager = ServiceManagerNative</span><br><span class="line">                .asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ServiceManagerNative.asInterface(Binder.allowBlocking(BinderInternal.getContextObject()));这个方法我们又需要分为两块分析，一个是方法体，一个是参数，如下：</p>
+<ol>
+<li>ServiceManagerNative.asInterface 是如何返回 servicemanager 的代理对象的</li>
+<li>Binder.allowBlocking(BinderInternal.getContextObject()) 这个方法参数到底是什么呢？</li>
+</ol>
+<p>我们首先分析方法的参数到底是什么？再来分析方法体。</p>
+<h2 id="2-Binder-allowBlocking-BinderInternal-getContextObject"><a href="#2-Binder-allowBlocking-BinderInternal-getContextObject" class="headerlink" title="2.Binder.allowBlocking(BinderInternal.getContextObject())"></a>2.Binder.allowBlocking(BinderInternal.getContextObject())</h2><p>Binder.allowBlocking 这个方法很简单，就是返回它的参数，所以Binder.allowBlocking(BinderInternal.getContextObject())具体返回什么，就只需要看 BinderInternal.getContextObject() 就行了。<br>BinderInternal.getContextObject() 实际是一个 native 方法，所以我们直接找到实际方法，如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line"><span class="keyword">static</span> jobject <span class="title function_">android_os_BinderInternal_getContextObject</span><span class="params">(JNIEnv* env, jobject clazz)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 通过 ProcessState 的方法，创建 BpBinder 对象，并返回</span></span><br><span class="line">    sp&lt;IBinder&gt; b = ProcessState::self()-&gt;getContextObject(NULL);</span><br><span class="line">    <span class="comment">// 创建 BinderProxy对象并返回，并将 BinderProxy 和 BpBinder 绑定</span></span><br><span class="line">    <span class="keyword">return</span> javaObjectForIBinder(env, b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-ProcessState-self-getContextObject"><a href="#2-1-ProcessState-self-getContextObject" class="headerlink" title="2-1.ProcessState::self()-&gt;getContextObject"></a>2-1.ProcessState::self()-&gt;getContextObject</h3><p>我们先来分析 ProcessState::self()-&gt;getContextObject 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/ProcessState.cpp</span></span><br><span class="line">sp&lt;IBinder&gt; ProcessState::getContextObject(const sp&lt;IBinder&gt;&amp; <span class="comment">/*caller*/</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 获取 handle 为 0 的代理对象</span></span><br><span class="line">    sp&lt;IBinder&gt; context = getStrongProxyForHandle(<span class="number">0</span>);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> context;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre><code>sp&lt;IBinder&gt; ProcessState::getStrongProxyForHandle(int32_t handle)
+&#123;
+    ... ...
+    b = BpBinder::create(handle);
+    ... ...
+&#125;
+</code></pre>
+<p>这个地方我们需要注意，创建 BpBinder对象时，传入的handle为0，就像门牌号一样，这个是规定的，为0 就表示找的是 servicemanager 的代理对象。</p>
+<h3 id="2-2-javaObjectForIBinder"><a href="#2-2-javaObjectForIBinder" class="headerlink" title="2-2.javaObjectForIBinder"></a>2-2.javaObjectForIBinder</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line">jobject <span class="title function_">javaObjectForIBinder</span><span class="params">(JNIEnv* env, const sp&lt;IBinder&gt;&amp; val)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 实际就是执行 BinderProxy的 getInstance方法</span></span><br><span class="line">    <span class="type">jobject</span> <span class="variable">object</span> <span class="operator">=</span> env-&gt;CallStaticObjectMethod(gBinderProxyOffsets.mClass,</span><br><span class="line">            gBinderProxyOffsets.mGetInstance, (jlong) nativeData, (jlong) val.get());</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/BinderProxy.java</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> BinderProxy <span class="title function_">getInstance</span><span class="params">(<span class="type">long</span> nativeData, <span class="type">long</span> iBinder)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 创建 BinderProxy 对象</span></span><br><span class="line">    result = <span class="keyword">new</span> <span class="title class_">BinderProxy</span>(nativeData);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 将 BinderProxy 和 iBinder 绑定，iBinder实际就是 BpBinder</span></span><br><span class="line">    sProxyMap.set(iBinder, result);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回 BinderProxy</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-总结"><a href="#2-3-总结" class="headerlink" title="2-3.总结"></a>2-3.总结</h3><p>通过分析可知，Binder.allowBlocking(BinderInternal.getContextObject()) 实际就是创建了 BpBinder 和 BinderProxy，并将二者关联，然后返回 BinderProxy 对象。</p>
+<h2 id="3-ServiceManagerNative-asInterface"><a href="#3-ServiceManagerNative-asInterface" class="headerlink" title="3.ServiceManagerNative.asInterface"></a>3.ServiceManagerNative.asInterface</h2><p>我们再来分析 ServiceManagerNative.asInterface 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManagerNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> IServiceManager <span class="title function_">asInterface</span><span class="params">(IBinder obj)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回 ServiceManagerProxy 对象，obj 为 BinderProxy 对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ServiceManagerProxy</span>(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这儿我们就拿到了每一个层级的 servicemanager 的代理对象，如下图：<br><img src="https://lingzhiwen.github.io/images/%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1_files/77485381.png" alt="77485381.png"><br>应用层为：ServiceManagerProxy<br>Framework层为：BinderProxy<br>native层为：BpBinder<br>内核层代理为：binder_ref 结构体<br>内核层实体为：binder_node 结构体</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/01/%E5%AE%89%E5%8D%93/%EF%BC%885.1.5%EF%BC%89%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="凌波微步">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="凌波微步的博客院子">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/10/01/%E5%AE%89%E5%8D%93/%EF%BC%885.1.5%EF%BC%89%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96/" class="post-title-link" itemprop="url">服务的注册和获取</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">Framework内核解析</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/IPC-Binder%E6%9C%BA%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">IPC Binder机制</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="注册服务"><a href="#注册服务" class="headerlink" title="注册服务"></a>注册服务</h1><p>我们以AMS注册为例，在 systemserver 启动时，就会调用 AMS 的 setSystemProcess 方法，AMS就是通过该方法向servicemanager注册的。如果对 systemserver启动还不了解的同学，可以先去学习 systemserver 的启动流程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</span></span><br><span class="line">public <span class="type">void</span> <span class="title function_">setSystemProcess</span><span class="params">()</span> &#123;</span><br><span class="line">    ... ... </span><br><span class="line">    <span class="comment">// 将 AMS 注册到 servicemanager 中</span></span><br><span class="line">    ServiceManager.addService(Context.ACTIVITY_SERVICE, this, <span class="comment">/* allowIsolated= */</span> <span class="literal">true</span>,</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManager.java</span></span><br><span class="line">public <span class="type">static</span> <span class="type">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, boolean allowIsolated,</span></span><br><span class="line"><span class="params">            <span class="type">int</span> dumpPriority)</span> &#123;</span><br><span class="line">    getIServiceManager().addService(name, service, allowIsolated, dumpPriority);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>getIServiceManager 我们前一节课已经分析了，可以理解为执行了 new ServiceManagerProxy(参数为BinderProxy对象);<br>我们在看 addService 方法前，我们先来看下 ServiceManagerProxy 的构造方法做了什么。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManagerNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">ServiceManagerProxy</span><span class="params">(IBinder remote)</span> &#123;</span><br><span class="line">    mRemote = remote;</span><br><span class="line">    mServiceManager = IServiceManager.Stub.asInterface(remote);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到这个地方使用了 AIDL，根据AIDL的理解还是可以知道，实际就是返回了一个Proxy对象，然后 remote &#x3D; BinderProxy。<br>接着我们再来看 addService 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/java/android/os/ServiceManagerNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, <span class="type">boolean</span> allowIsolated, <span class="type">int</span> dumpPriority)</span></span><br><span class="line">            <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">    mServiceManager.addService(name, service, allowIsolated, dumpPriority);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法就会执行到 AIDL对应的 Proxy.addService 方法，根据我们前面介绍的AIDL，我们可以知道生成的AIDL代码，如下：<br>这个方法里面就会执行 mRemote.transact，也就是执行 BinderProxy.transact。所以接着我们来分析下 BinderProxy.transact 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addService</span><span class="params">(String name, IBinder service, <span class="type">boolean</span> allowIsolated, <span class="type">int</span> dumpPriority)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">    <span class="type">Parcel</span> <span class="variable">data</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">    <span class="type">Parcel</span> <span class="variable">reply</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 此处 service == AMS</span></span><br><span class="line">    data.writeStrongBinder(service);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 实际就是执行 BinderProxy.transact</span></span><br><span class="line">    mRemote.transact(ADD_SERVICE_TRANSACTION, data, reply, <span class="number">0</span>);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们分别分析 <code>data.writeStrongBinder(service);</code> 和 <code>mRemote.transact</code> 这两个方法。</p>
+<h2 id="1-data-writeStrongBinder"><a href="#1-data-writeStrongBinder" class="headerlink" title="1.data.writeStrongBinder"></a>1.data.writeStrongBinder</h2><p>这个方法实际就是调用一个native方法，最终进入jni层，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_os_Parcel.cpp</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">android_os_Parcel_writeStrongBinder</span><span class="params">(JNIEnv* env, jclass clazz, jlong nativePtr, jobject object)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 创建  JavaBBinder 对象，并保存在本地</span></span><br><span class="line">    <span class="comment">// 下面分别介绍这个方法和参数</span></span><br><span class="line">    const <span class="type">status_t</span> <span class="variable">err</span> <span class="operator">=</span> parcel-&gt;writeStrongBinder(ibinderForJavaObject(env, object));</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-1-参数：ibinderForJavaObject"><a href="#1-1-参数：ibinderForJavaObject" class="headerlink" title="1-1.参数：ibinderForJavaObject"></a>1-1.参数：ibinderForJavaObject</h3><p>这个方法的作用是创建 JavaBBinder 对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line">sp&lt;IBinder&gt; <span class="title function_">ibinderForJavaObject</span><span class="params">(JNIEnv* env, jobject obj)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 获取 JavaBBinderHolder 对象</span></span><br><span class="line">    JavaBBinderHolder* jbh = (JavaBBinderHolder*)</span><br><span class="line">            env-&gt;GetLongField(obj, gBinderOffsets.mObject);</span><br><span class="line">    <span class="comment">// 获取 JavaBBinder 对象</span></span><br><span class="line">    <span class="keyword">return</span> jbh-&gt;get(env, obj);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line">sp&lt;JavaBBinder&gt; <span class="title function_">get</span><span class="params">(JNIEnv* env, jobject obj)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 创建 JavaBBinder对象</span></span><br><span class="line">    b = new JavaBBinder(env, obj);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 返回 JavaBBinder 对象</span></span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-方法：parcel-writeStrongBinder"><a href="#1-2-方法：parcel-writeStrongBinder" class="headerlink" title="1-2.方法：parcel-&gt;writeStrongBinder"></a>1-2.方法：parcel-&gt;writeStrongBinder</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数为 JavaBBinder</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">Parcel::writeStrongBinder</span><span class="params">(<span class="type">const</span> sp&lt;IBinder&gt;&amp; val)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> flattenBinder(val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数为 JavaBBinder</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">Parcel::flattenBinder</span><span class="params">(<span class="type">const</span> sp&lt;IBinder&gt;&amp; binder)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 通过 JavaBBinder 获取 BBinder</span></span><br><span class="line">    BBinder *local = binder-&gt;localBinder();</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-BinderProxy-transact"><a href="#2-BinderProxy-transact" class="headerlink" title="2.BinderProxy.transact"></a>2.BinderProxy.transact</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public boolean <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span> throws RemoteException &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 这是一个native方法</span></span><br><span class="line">    <span class="keyword">return</span> transactNative(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>transactNative 是一个 native 方法，会执行 android_util_Binder.cpp 中的 android_os_BinderProxy_transact 方法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/core/jni/android_util_Binder.cpp</span></span><br><span class="line"><span class="type">static</span> jboolean <span class="title function_">android_os_BinderProxy_transact</span><span class="params">(JNIEnv* env, jobject obj,</span></span><br><span class="line"><span class="params">        jint code, jobject dataObj, jobject replyObj, jint flags)</span> <span class="comment">// throws RemoteException</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 获取 BpBinder 对象</span></span><br><span class="line">    IBinder* target = getBPNativeData(env, obj)-&gt;mObject.get();</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 执行 BpBinder.transact</span></span><br><span class="line">    <span class="type">status_t</span> err = target-&gt;transact(code, *data, reply, flags);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-BpBinder-transact"><a href="#2-1-BpBinder-transact" class="headerlink" title="2-1.BpBinder.transact"></a>2-1.BpBinder.transact</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/BpBinder.cpp</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">BpBinder::transact</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="type">uint32_t</span> code, <span class="type">const</span> Parcel&amp; data, Parcel* reply, <span class="type">uint32_t</span> flags)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">status_t</span> status = IPCThreadState::self()-&gt;transact(</span><br><span class="line">            mHandle, code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/IPCThreadState.cpp</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">IPCThreadState::transact</span><span class="params">(<span class="type">int32_t</span> handle,</span></span><br><span class="line"><span class="params">                                  <span class="type">uint32_t</span> code, <span class="type">const</span> Parcel&amp; data,</span></span><br><span class="line"><span class="params">                                  Parcel* reply, <span class="type">uint32_t</span> flags)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 写入命令 BC_TRANSACTION</span></span><br><span class="line">    err = writeTransactionData(BC_TRANSACTION, flags, handle, code, data, nullptr);</span><br><span class="line">    <span class="comment">// 类似于网络请求中的 request，最终会执行 ioctl 方法</span></span><br><span class="line">    err = waitForResponse(reply);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据我们前面课程的内容，可以知道，ioctl最终会调用到两个方法，一个是 binder_thread_write，一个是 binder_thread_read，如下图：<br><img src="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/f0bb73ba-2d8f-4739-8093-cfe61f6c29f8.png" alt="f0bb73ba-2d8f-4739-8093-cfe61f6c29f8.png"><br>这两个方法就是根据不同的命令，也叫协议，来进行不同的处理的，一次完整的通信协议如下图：</p>
+<p><img src="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/4d20efa9-d0b9-4d0c-a371-0b5e35b96b6b.jpeg" alt="4d20efa9-d0b9-4d0c-a371-0b5e35b96b6b.jpeg"><br>Binder协议包含在IPC数据中，分为两类:</p>
+<ol>
+<li>BINDER_COMMAND_PROTOCOL：binder请求码，以”BC_“开头，简称BC码，用于从IPC层传递到Binder Driver层；</li>
+<li>BINDER_RETURN_PROTOCOL ：binder响应码，以”BR_“开头，简称BR码，用于从Binder Driver层传递到IPC层；</li>
+</ol>
+<p>上面我们已经写入了 BC_TRANSACTION 命令，然后通过 binder_thread_write 方法，就会将这个命令发给 binder驱动处理，binder驱动 会先返回一个 BR_TRANSACTION_COMPLETE 命令，让 AMS客户端 挂起，然后将客户端发过来的数据放到内核和服务端的内存共享区域，这样服务端就也能获取到数据了，然后通过 binder_thread_read 方法，向 servicemanager服务端 发送 BR_TRANSACTION 命令，唤醒 servicemanager服务端，servicemanager服务端就会处理该命令，执行如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/IPCThreadState.cpp</span></span><br><span class="line"><span class="type">status_t</span> <span class="title function_">IPCThreadState::executeCommand</span><span class="params">(<span class="type">int32_t</span> cmd)</span></span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">switch</span> ((<span class="type">uint32_t</span>)cmd) &#123;</span><br><span class="line">        ... ...</span><br><span class="line">        <span class="keyword">case</span> BR_TRANSACTION:</span><br><span class="line">        &#123;</span><br><span class="line">            ... ...</span><br><span class="line">            <span class="comment">// the_context_object 就是 ServiceManager</span></span><br><span class="line">            error = the_context_object-&gt;transact(tr.code, buffer, &amp;reply, tr.flags);</span><br><span class="line">            ... ...</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ServiceManager.transact 方法最终会调用到 ServiceManager 的 addService 方法，如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">frameworks/native/cmds/servicemanager/ServiceManager.cpp</span><br><span class="line">Status <span class="title function_">ServiceManager::addService</span><span class="params">(<span class="type">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name, <span class="type">const</span> sp&lt;IBinder&gt;&amp; binder, <span class="type">bool</span> allowIsolated, <span class="type">int32_t</span> dumpPriority)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 将服务按名称 保存在 mNameToService 中</span></span><br><span class="line">    mNameToService[name] = Service &#123;</span><br><span class="line">        .binder = binder,</span><br><span class="line">        .allowIsolated = allowIsolated,</span><br><span class="line">        .dumpPriority = dumpPriority,</span><br><span class="line">        .debugPid = ctx.debugPid,</span><br><span class="line">    &#125;;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="获取服务"><a href="#获取服务" class="headerlink" title="获取服务"></a>获取服务</h1><p>获取服务的流程与添加服务的流程类似，这里就不再赘述了，最终会调用 ServiceManager 的 getService 方法，如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/cmds/servicemanager/ServiceManager.cpp</span></span><br><span class="line">Status <span class="title function_">ServiceManager::getService</span><span class="params">(<span class="type">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name, sp&lt;IBinder&gt;* outBinder)</span> &#123;</span><br><span class="line">    *outBinder = tryGetService(name, <span class="literal">true</span>);</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sp&lt;IBinder&gt; <span class="title function_">ServiceManager::tryGetService</span><span class="params">(<span class="type">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name, <span class="type">bool</span> startIfNotFound)</span> &#123;</span><br><span class="line">    ... ...</span><br><span class="line">    sp&lt;IBinder&gt; out;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 根据名称，找到对应的服务，然后返回</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">auto</span> it = mNameToService.find(name); it != mNameToService.end()) &#123;</span><br><span class="line">        service = &amp;(it-&gt;second);</span><br><span class="line">        ... ...</span><br><span class="line">        out = service-&gt;binder;</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">return</span> out;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><img src="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/f9e0a58d-3762-4424-b372-17edb50b688e.png" alt="f9e0a58d-3762-4424-b372-17edb50b688e.png"><br>接下来我们总结下这几节课的整个流程：</p>
+<ol>
+<li>servicemanager 启动时，会将自己设置为大管家，这样所有的客户端都可以通过handle为0，找到servicemanager服务。</li>
+<li>AMS注册服务，首先AMS会获取servicemanager的binder代理对象，然后将自己的binder代理传给servicemanager。</li>
+<li>用户APP获取AMS服务，首先会获取servicemanager的binder代理对象，然后通过servicemanager拿到AMS的binder代理对象。然后用户APP就可以通过AMS这个代理对象与AMS进行通信了。</li>
+</ol>
+
       
     </div>
 
