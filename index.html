@@ -384,7 +384,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 <li>成为上下文的管理者，这样所有的进程都可以获取到它</li>
 <li>循环等待服务的注册</li>
 </ol>
-<h2 id="50-46-109-x61-105-x6e-64-109-97-x69-x6e-x2e-99-x70-x70"><a href="#50-46-109-x61-105-x6e-64-109-97-x69-x6e-x2e-99-x70-x70" class="headerlink" title="&#50;&#46;&#109;&#x61;&#105;&#x6e;&#64;&#109;&#97;&#x69;&#x6e;&#x2e;&#99;&#x70;&#x70;"></a><a href="mailto:&#50;&#46;&#109;&#x61;&#105;&#x6e;&#64;&#109;&#97;&#x69;&#x6e;&#x2e;&#99;&#x70;&#x70;">&#50;&#46;&#109;&#x61;&#105;&#x6e;&#64;&#109;&#97;&#x69;&#x6e;&#x2e;&#99;&#x70;&#x70;</a></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/cmds/servicemanager/main.cpp</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* driver = argc == <span class="number">2</span> ? argv[<span class="number">1</span>] : <span class="string">&quot;/dev/binder&quot;</span>;</span><br><span class="line">    <span class="comment">// 1.打开binder驱动</span></span><br><span class="line">    sp&lt;ProcessState&gt; ps = ProcessState::initWithDriver(driver);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 2.成为上下文的管理者，这样所有的进程都可以获取到它</span></span><br><span class="line">    ps-&gt;becomeContextManager(nullptr, nullptr);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 3.将binder回调设置到 looper中</span></span><br><span class="line">    BinderCallback::setupTo(looper);</span><br><span class="line">    <span class="comment">// 4.循环处理服务的注册，例如AMS、WMS等的注册</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">        looper-&gt;pollAll(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="x32-46-109-x61-x69-110-64-109-97-105-x6e-x2e-x63-112-112"><a href="#x32-46-109-x61-x69-110-64-109-97-105-x6e-x2e-x63-112-112" class="headerlink" title="&#x32;&#46;&#109;&#x61;&#x69;&#110;&#64;&#109;&#97;&#105;&#x6e;&#x2e;&#x63;&#112;&#112;"></a><a href="mailto:&#x32;&#46;&#109;&#x61;&#x69;&#110;&#64;&#109;&#97;&#105;&#x6e;&#x2e;&#x63;&#112;&#112;">&#x32;&#46;&#109;&#x61;&#x69;&#110;&#64;&#109;&#97;&#105;&#x6e;&#x2e;&#x63;&#112;&#112;</a></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/cmds/servicemanager/main.cpp</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* driver = argc == <span class="number">2</span> ? argv[<span class="number">1</span>] : <span class="string">&quot;/dev/binder&quot;</span>;</span><br><span class="line">    <span class="comment">// 1.打开binder驱动</span></span><br><span class="line">    sp&lt;ProcessState&gt; ps = ProcessState::initWithDriver(driver);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 2.成为上下文的管理者，这样所有的进程都可以获取到它</span></span><br><span class="line">    ps-&gt;becomeContextManager(nullptr, nullptr);</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// 3.将binder回调设置到 looper中</span></span><br><span class="line">    BinderCallback::setupTo(looper);</span><br><span class="line">    <span class="comment">// 4.循环处理服务的注册，例如AMS、WMS等的注册</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">        looper-&gt;pollAll(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="2-1-ProcessState-initWithDriver–打开binder驱动"><a href="#2-1-ProcessState-initWithDriver–打开binder驱动" class="headerlink" title="2-1.ProcessState::initWithDriver–打开binder驱动"></a>2-1.ProcessState::initWithDriver–打开binder驱动</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// frameworks/native/libs/binder/ProcessState.cpp</span></span><br><span class="line">sp&lt;ProcessState&gt; <span class="title function_">ProcessState::initWithDriver</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* driver)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 初始化 ProcessState 对象，这个里面就会调用到binder_open方法，打开驱动</span></span><br><span class="line">    gProcess = new ProcessState(driver);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ProcessState::ProcessState(<span class="type">const</span> <span class="type">char</span> *driver)</span><br><span class="line">    : mDriverName(String8(driver))</span><br><span class="line">    , mDriverFD(open_driver(driver))</span><br><span class="line">    , ... ...</span><br><span class="line">&#123;</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="keyword">if</span> (mDriverFD &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 调用mmap，实现内存映射，最终调用到内核的 binder_mmap 方法</span></span><br><span class="line">        mVMStart = mmap(nullptr, BINDER_VM_SIZE, PROT_READ, MAP_PRIVATE | MAP_NORESERVE, mDriverFD, <span class="number">0</span>);</span><br><span class="line">        ... ...</span><br><span class="line">    &#125;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -745,87 +745,6 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Android%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="凌波微步">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="凌波微步的博客院子">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Android%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" class="post-title-link" itemprop="url">Android源码编译</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/" itemprop="url" rel="index"><span itemprop="name">命令行</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>一、java环境配置</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">udo apt-get install openjdk-8-jdk</span><br><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64</span><br><span class="line">export PATH=$JAVA_HOME/bin:$PATH</span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar</span><br><span class="line">java -version</span><br></pre></td></tr></table></figure>
-
-<p><strong>二、依赖库安装</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git  gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip python libtinfo5 libncurses5-dev libncurses5 u-boot-tools</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p><strong>三、问题集锦</strong></p>
-<ul>
-<li><p>Ensure Jack service is installed and started</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.从/etc/java-8-openjdk/security/java.security中找到jdk.tls.disabledAlgorithms取消TLSv1, TLSv1.1 禁用;</span><br><span class="line"></span><br><span class="line">2.检查jack 服务是否启动</span><br><span class="line">cd prebuilts/sdk/tools</span><br><span class="line">./jack-admin start-server/stop-server/kill-server</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>lex:aidl&lt;&#x3D;system&#x2F;tools&#x2F;aidl&#x2F;aidl_language_I.II FAILED:&#x2F;</p>
-</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export LC_ALL=C</span><br></pre></td></tr></table></figure>
-
-<p><strong>四、framework.jar的位置</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Git/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -943,6 +862,87 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 <p><em><strong>Gitee在提交大文件时，出现如下错误，异常退出，提示需要付费企业版支持Git LFS功能</strong></em></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> .git/hooks/pre-push</span><br><span class="line">git push -u origin <span class="string">&quot;master&quot;</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Android%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="凌波微步">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="凌波微步的博客院子">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Android%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" class="post-title-link" itemprop="url">Android源码编译</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/" itemprop="url" rel="index"><span itemprop="name">命令行</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>一、java环境配置</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">udo apt-get install openjdk-8-jdk</span><br><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64</span><br><span class="line">export PATH=$JAVA_HOME/bin:$PATH</span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar</span><br><span class="line">java -version</span><br></pre></td></tr></table></figure>
+
+<p><strong>二、依赖库安装</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git  gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip python libtinfo5 libncurses5-dev libncurses5 u-boot-tools</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p><strong>三、问题集锦</strong></p>
+<ul>
+<li><p>Ensure Jack service is installed and started</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.从/etc/java-8-openjdk/security/java.security中找到jdk.tls.disabledAlgorithms取消TLSv1, TLSv1.1 禁用;</span><br><span class="line"></span><br><span class="line">2.检查jack 服务是否启动</span><br><span class="line">cd prebuilts/sdk/tools</span><br><span class="line">./jack-admin start-server/stop-server/kill-server</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>lex:aidl&lt;&#x3D;system&#x2F;tools&#x2F;aidl&#x2F;aidl_language_I.II FAILED:&#x2F;</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export LC_ALL=C</span><br></pre></td></tr></table></figure>
+
+<p><strong>四、framework.jar的位置</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar</span><br></pre></td></tr></table></figure>
+
       
     </div>
 
