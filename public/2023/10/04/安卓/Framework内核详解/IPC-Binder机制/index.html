@@ -20,28 +20,44 @@
     var CONFIG = {"hostname":"lingzhiwen.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="深山老凌">
-<meta property="og:url" content="https://lingzhiwen.github.io/index.html">
+  <meta name="description" content="binder驱动学习binder的时候，一定要牢记这张图的层级结构，这样在讲解的时候，你才能知道讲解的是哪块内容。 这块我们主要掌握四个方法：  binder_init：初始化binder驱动 binder_open：打开binder驱动 binder_mmap：设置内存映射 binder_ioctl：数据读写操作  其中 binder_init 方法是在idle初始化的时候就会调用： 123&#x2F;&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPC Binder机制">
+<meta property="og:url" content="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/Framework%E5%86%85%E6%A0%B8%E8%AF%A6%E8%A7%A3/IPC-Binder%E6%9C%BA%E5%88%B6/index.html">
 <meta property="og:site_name" content="深山老凌">
+<meta property="og:description" content="binder驱动学习binder的时候，一定要牢记这张图的层级结构，这样在讲解的时候，你才能知道讲解的是哪块内容。 这块我们主要掌握四个方法：  binder_init：初始化binder驱动 binder_open：打开binder驱动 binder_mmap：设置内存映射 binder_ioctl：数据读写操作  其中 binder_init 方法是在idle初始化的时候就会调用： 123&#x2F;&#x2F;">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/binder_driver_files/binder1.png">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/binder_driver_files/58201170.png">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/binder_driver_files/72865820.png">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/binder_driver_files/74579249.png">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/binder_driver_files/56256675.png">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/servicemanager_files/64706269.png">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/servicemanager_files/8a7025a8-cb1a-4227-93c4-82d5faf9e74f.jpeg">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/%E8%8E%B7%E5%8F%96servicemanager%E5%AF%B9%E8%B1%A1_files/77485381.png">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/f0bb73ba-2d8f-4739-8093-cfe61f6c29f8.png">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/4d20efa9-d0b9-4d0c-a371-0b5e35b96b6b.jpeg">
+<meta property="og:image" content="https://lingzhiwen.github.io/images/%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%B3%A8%E5%86%8C%E5%92%8C%E8%8E%B7%E5%8F%96_files/f9e0a58d-3762-4424-b372-17edb50b688e.png">
+<meta property="article:published_time" content="2023-10-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-10-05T14:46:53.479Z">
 <meta property="article:author" content="深山老凌">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lingzhiwen.github.io/images/binder_driver_files/binder1.png">
 
-<link rel="canonical" href="https://lingzhiwen.github.io/">
+<link rel="canonical" href="https://lingzhiwen.github.io/2023/10/04/%E5%AE%89%E5%8D%93/Framework%E5%86%85%E6%A0%B8%E8%AF%A6%E8%A7%A3/IPC-Binder%E6%9C%BA%E5%88%B6/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>深山老凌</title>
+  <title>IPC Binder机制 | 深山老凌</title>
   
 
 
@@ -139,9 +155,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -157,10 +174,9 @@
       <meta itemprop="name" content="深山老凌">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/04/%E5%AE%89%E5%8D%93/Framework%E5%86%85%E6%A0%B8%E8%AF%A6%E8%A7%A3/IPC-Binder%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">IPC Binder机制</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          IPC Binder机制
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -178,6 +194,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
 
         </div>
       </header>
@@ -188,7 +211,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="binder驱动"><a href="#binder驱动" class="headerlink" title="binder驱动"></a>binder驱动</h1><p>学习binder的时候，一定要牢记这张图的层级结构，这样在讲解的时候，你才能知道讲解的是哪块内容。<br><img src="/images/binder_driver_files/binder1.png" alt="image"></p>
+        <h1 id="binder驱动"><a href="#binder驱动" class="headerlink" title="binder驱动"></a>binder驱动</h1><p>学习binder的时候，一定要牢记这张图的层级结构，这样在讲解的时候，你才能知道讲解的是哪块内容。<br><img src="/images/binder_driver_files/binder1.png" alt="image"></p>
 <p>这块我们主要掌握四个方法：</p>
 <ol>
 <li>binder_init：初始化binder驱动</li>
@@ -437,620 +460,37 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 <li>用户APP获取AMS服务，首先会获取servicemanager的binder代理对象，然后通过servicemanager拿到AMS的binder代理对象。然后用户APP就可以通过AMS这个代理对象与AMS进行通信了。</li>
 </ol>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/03/%E5%AE%89%E5%8D%93/Framework%E5%86%85%E6%A0%B8%E8%AF%A6%E8%A7%A3/Handler%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="深山老凌">
-      <meta itemprop="description" content="">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="深山老凌">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/03/%E5%AE%89%E5%8D%93/Framework%E5%86%85%E6%A0%B8%E8%AF%A6%E8%A7%A3/Handler%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">Handler消息机制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/Framework%E5%86%85%E6%A0%B8%E8%A7%A3%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">Framework内核解析</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Handler详解"><a href="#Handler详解" class="headerlink" title="Handler详解"></a>Handler详解</h1><p>在android开发中，经常会在子线程中进行一些操作，当操作完毕后会通过handler发送一些数据给主线程，通知主线程做相应的操作。探素其背后的原理：子线程 handler 主线程 其实构成了线程模型中的经典问题 生产者-消费者模型。生产者-消费者模型：生产者和消费者在同一时间段内共用同一个存储空间，生产者往存储空间中添加数据，消费者从存储空间中取走数据。</p>
-<p><img src="/images/handler/handler_01.png" alt="handler_01.png"></p>
-<p>好处： - 保证数据生产消费的顺序（通过MessageQueue,先进先出） - 不管是生产者(子线程)还是消费者（主线程）<br>都只依赖缓冲区（handler），生产者消费者之间不会相互持有，使他们之间没有任何耦合<br>源码分析：<br>Handler<br>    Handler机制的相关类<br>    创建Looper<br>        创建MessageQueue以及Looper与当前线程的绑定<br>    Looper.loop()<br>    创建Handler<br>    创建Message<br>    Message和Handler的绑定<br>    Handler发送消息<br>    Handler处理消息 </p>
-<h2 id="Handler机制的相关类"><a href="#Handler机制的相关类" class="headerlink" title="Handler机制的相关类"></a>Handler机制的相关类</h2><p>Hanlder：发送和接收消息<br>Looper：用于轮询消息队列，一个线程只能有一个Looper<br>Message： 消息实体<br>MessageQueue： 消息队列用于存储消息和管理消息</p>
-<h2 id="创建Looper"><a href="#创建Looper" class="headerlink" title="创建Looper"></a>创建Looper</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">创建Looper的方法是调用Looper.prepare() 方法</span><br></pre></td></tr></table></figure>
-
-<p>在ActivityThread中的main方法中为我们prepare了</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">        Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;ActivityThreadMain&quot;);</span><br><span class="line">        //其他代码省略...</span><br><span class="line">        Looper.prepareMainLooper(); //初始化Looper以及MessageQueue</span><br><span class="line">        ActivityThread thread = new ActivityThread();</span><br><span class="line">        thread.attach(false);</span><br><span class="line">        if (sMainThreadHandler == null) &#123;</span><br><span class="line">            sMainThreadHandler = thread.getHandler();</span><br><span class="line">        &#125;</span><br><span class="line">        if (false) &#123;</span><br><span class="line">            Looper.myLooper().setMessageLogging(new</span><br><span class="line">            LogPrinter(Log.DEBUG, &quot;ActivityThread&quot;));</span><br><span class="line">        &#125;</span><br><span class="line">        // End of event ActivityThreadMain.</span><br><span class="line">        Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">        Looper.loop(); //开始轮循操作</span><br><span class="line"></span><br><span class="line">        throw new RuntimeException(&quot;Main thread loop unexpectedly exited&quot;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>Looper.prepareMainLooper();</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static void prepareMainLooper() &#123;</span><br><span class="line">    prepare(false);//消息队列不可以quit</span><br><span class="line">    synchronized (Looper.class) &#123;</span><br><span class="line">        if (sMainLooper != null) &#123;</span><br><span class="line">            throw new IllegalStateException(&quot;The main Looper has already been prepared.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        sMainLooper = myLooper();</span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>prepare有两个重载的方法，主要看 prepare(boolean quitAllowed) quitAllowed的作用是在创建MessageQueue时<br>标识消息队列是否可以销毁， <strong>主线程不可被销毁</strong> 下面有介绍</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public static void prepare() &#123;</span><br><span class="line">            prepare(true);//消息队列可以quit    </span><br><span class="line">    &#125;</span><br><span class="line">    //quitAllowed 主要</span><br><span class="line">    private static void prepare(boolean quitAllowed) &#123;</span><br><span class="line">        if (sThreadLocal.get() != null) &#123;//不为空表示当前线程已经创建了Looper</span><br><span class="line">            throw new RuntimeException(&quot;Only one Looper may be created per thread&quot;);</span><br><span class="line">            //每个线程只能创建一个Looper</span><br><span class="line">        &#125;</span><br><span class="line">        sThreadLocal.set(new Looper(quitAllowed));//创建Looper并设置给sThreadLocal，这样get的时候就不会为null了</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="创建MessageQueue以及Looper与当前线程的绑定"><a href="#创建MessageQueue以及Looper与当前线程的绑定" class="headerlink" title="创建MessageQueue以及Looper与当前线程的绑定"></a>创建MessageQueue以及Looper与当前线程的绑定</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">private Looper(boolean quitAllowed) &#123;</span><br><span class="line">    mQueue = new MessageQueue(quitAllowed);//创建了MessageQueue</span><br><span class="line">    mThread = Thread.currentThread(); //当前线程的绑定</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>MessageQueue的构造方法</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MessageQueue(boolean quitAllowed) &#123;</span><br><span class="line">//mQuitAllowed决定队列是否可以销毁 主线程的队列不可以被销毁需要传入false, 在MessageQueue的quit()方法就不贴源码了</span><br><span class="line">    mQuitAllowed = quitAllowed;</span><br><span class="line">    mPtr = nativeInit();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Looper-loop"><a href="#Looper-loop" class="headerlink" title="Looper.loop()"></a>Looper.loop()</h2><p>同时是在main方法中 Looper.prepareMainLooper() 后Looper.loop(); 开始轮询</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public static void loop() &#123;</span><br><span class="line">    final Looper me = myLooper();//里面调用了sThreadLocal.get()获得刚才创建的Looper对象</span><br><span class="line">    if (me == null) &#123;</span><br><span class="line">        throw new RuntimeException(&quot;No Looper; Looper.prepare() wasn&#x27;t called on this thread.&quot;);</span><br><span class="line">    &#125;//如果Looper为空则会抛出异常</span><br><span class="line">    final MessageQueue queue = me.mQueue;</span><br><span class="line"></span><br><span class="line">    // Make sure the identity of this thread is that of the local process,</span><br><span class="line">    // and keep track of what that identity token actually is.</span><br><span class="line">    Binder.clearCallingIdentity();</span><br><span class="line">    final long ident = Binder.clearCallingIdentity();</span><br><span class="line"></span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        //这是一个死循环，从消息队列不断的取消息</span><br><span class="line">        Message msg = queue.next(); // might block</span><br><span class="line">        if (msg == null) &#123;享学课堂享学课堂享学课堂</span><br><span class="line">            //由于刚创建MessageQueue就开始轮询，队列里是没有消息的,等到Handler sendMessage  enqueueMessage后队列里才有消息</span><br><span class="line">            // No message indicates that the message queue is quitting.</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    // This must be in a local variable, in case a UI event sets the logger</span><br><span class="line">    Printer logging = me.mLogging;</span><br><span class="line">    if (logging != null) &#123;</span><br><span class="line">        logging.println(&quot;&gt;&gt;&gt;&gt;&gt; Dispatching to &quot; + msg.target + &quot; &quot; + msg.callback + &quot;: &quot; + msg.what);</span><br><span class="line">    &#125;</span><br><span class="line">    msg.target.dispatchMessage(msg);//msg.target就是绑定的Handler，详见后面Message的部分，Handler开始</span><br><span class="line">    //后面代码省略.....</span><br><span class="line">    msg.recycleUnchecked();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="创建Handler"><a href="#创建Handler" class="headerlink" title="创建Handler"></a>创建Handler</h2><p>最常见的创建handler</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Handler handler=new Handler()&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void handleMessage(Message msg) &#123;</span><br><span class="line">        super.handleMessage(msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>在内部调用 this(null, false);</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public Handler(Callback callback, boolean async) &#123;</span><br><span class="line">    //前面省略</span><br><span class="line">    mLooper = Looper.myLooper();//获取Looper，**注意不是创建Looper**！</span><br><span class="line">    if (mLooper == null) &#123;</span><br><span class="line">        throw new RuntimeException(&quot;Can&#x27;t create handler inside thread that has not called Looper.prepare()&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    mQueue = mLooper.mQueue;//创建消息队列MessageQueue</span><br><span class="line">    mCallback = callback; //初始化了回调接口</span><br><span class="line">    mAsynchronous = async;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Looper.myLooper()；</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//这是Handler中定义的ThreadLocal ThreadLocal主要解多线程并发的问题</span><br><span class="line">// sThreadLocal.get() will return null unless you&#x27;ve called prepare().</span><br><span class="line">static final ThreadLocal&lt;Looper&gt; sThreadLocal = new ThreadLocal&lt;Looper&gt;();</span><br><span class="line"></span><br><span class="line">public static @Nullable Looper myLooper() &#123;</span><br><span class="line">    return sThreadLocal.get();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>sThreadLocal.get() will return null unless you’ve called prepare(). 这句话告诉我们get可能返回null 除非先调用<br>prepare()方法创建Looper。在前面已经介绍了   </p>
-<h2 id="创建Message"><a href="#创建Message" class="headerlink" title="创建Message"></a>创建Message</h2><p>可以直接new Message 但是有更好的方式 Message.obtain。因为可以检查是否有可以复用的Message,用过复用避<br>免过多的创建、销毁Message对象达到优化内存和性能的目地</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public static Message obtain(Handler h) &#123;</span><br><span class="line">        Message m = obtain();//调用重载的obtain方法</span><br><span class="line">        m.target = h;//并绑定的创建Message对象的handler</span><br><span class="line"></span><br><span class="line">        return m;</span><br><span class="line">    &#125;</span><br><span class="line">    public static Message obtain() &#123;</span><br><span class="line">        synchronized (sPoolSync) &#123;//sPoolSync是一个Object对象，用来同步保证线程安全</span><br><span class="line">            if (sPool != null) &#123;//sPool是就是handler dispatchMessage 后 通过recycleUnchecked 回收用以复用的Message</span><br><span class="line">                Message m = sPool;</span><br><span class="line">                sPool = m.next;</span><br><span class="line">                m.next = null;</span><br><span class="line">                m.flags = 0; // clear in-use flag</span><br><span class="line">                sPoolSize--;</span><br><span class="line">                return m;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    return new Message();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Message和Handler的绑定"><a href="#Message和Handler的绑定" class="headerlink" title="Message和Handler的绑定"></a>Message和Handler的绑定</h2><p>创建Message的时候可以通过 Message.obtain(Handler h) 这个构造方法绑定。当然可以在 在Handler 中的<br>enqueueMessage（）也绑定了，所有发送Message的方法都会调用此方法入队，所以在创建Message的时候是可<br>以不绑定的</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">private boolean enqueueMessage(MessageQueue queue, Message msg, long uptimeMillis) &#123;</span><br><span class="line">        msg.target = this; //绑定</span><br><span class="line">        if (mAsynchronous) &#123;</span><br><span class="line">            msg.setAsynchronous(true);</span><br><span class="line">        &#125;</span><br><span class="line">        return queue.enqueueMessage(msg, uptimeMillis);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Handler发送消息"><a href="#Handler发送消息" class="headerlink" title="Handler发送消息"></a>Handler发送消息</h2><p>Handler发送消息的重载方法很多，但是主要只有2种。 sendMessage(Message) sendMessage方法通过一系列重<br>载方法的调用，sendMessage调用sendMessageDelayed，继续调用sendMessageAtTime，继续调用<br>enqueueMessage，继续调用messageQueue的enqueueMessage方法，将消息保存在了消息队列中，而最终由<br>Looper取出，交给Handler的dispatchMessage进行处理<br>我们可以看到在dispatchMessage方法中，message中callback是一个Runnable对象，如果callback不为空，则直接<br>调用callback的run方法，否则判断mCallback是否为空，mCallback在Handler构造方法中初始化，在主线程通直接<br>通过无参的构造方法new出来的为null,所以会直接执行后面的handleMessage()方法</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public void dispatchMessage(Message msg) &#123;</span><br><span class="line">    if (msg.callback != null) &#123;//callback在message的构造方法中初始化或者使用shandler.post(Runnable)时候才不为空</span><br><span class="line">            handleCallback(msg);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            if (mCallback != null) &#123;//mCallback是一个Callback对象，通过无参的构造方法创建出来的handler，该属性为null，此段不执行</span><br><span class="line">                if (mCallback.handleMessage(msg)) &#123;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        handleMessage(msg);//最终执行handleMessage方法</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">private static void handleCallback(Message message) &#123;</span><br><span class="line">    message.callback.run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Handler处理消息"><a href="#Handler处理消息" class="headerlink" title="Handler处理消息"></a>Handler处理消息</h2><p>在handleMessage(Message)方法中，我们可以拿到message对象，根据不同的需求进行处理，整个Handler机制的<br>流程就结束了。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>handler.sendMessage 发送消息到消息队列MessageQueue，然后looper调用自己的loop()函数带动<br>MessageQueue从而轮询messageQueue里面的每个Message，当Message达到了可以执行的时间的时候开始执<br>行，执行后就会调用message绑定的Handler来处理消息。大致的过程如下图所示</p>
-<p>handler机制就是一个传送带的运转机制。<br>1）MessageQueue就像履带。<br>2）Thread就像背后的动力，就是我们通信都是基于线程而来的。<br>3）传送带的滚动需要一个开关给电机通电，那么就相当于我们的loop函数，而这个loop里面的for循环就会带着不断<br>的滚动，去轮询messageQueue<br>4）Message就是 我们的货物了。</p>
-<h2 id="难点问题"><a href="#难点问题" class="headerlink" title="难点问题"></a>难点问题</h2><h3 id="线程同步问题"><a href="#线程同步问题" class="headerlink" title="线程同步问题"></a>线程同步问题</h3><p>Handler是用于线程间通信的，但是它产生的根本并不只是用于UI处理，而更多的是handler是整个app通信的框架，<br>大家可以在ActivityThread里面感受到，整个App都是用它来进行线程间的协调。Handler既然这么重要，那么它的<br>线程安全就至关重要了，那么它是如何保证自己的线程安全呢？<br>Handler机制里面最主要的类MessageQueue，这个类就是所有消息的存储仓库，在这个仓库中，我们如何的管理好<br>消息，这个就是一个关键点了。消息管理就2点：1）消息入库（enqueueMessage），2）消息出库（next），所以<br>这两个接口是确保线程安全的主要档口。<br>enqueueMessage 源码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">boolean enqueueMessage(Message msg, long when) &#123;</span><br><span class="line">    if (msg.target == null) &#123;</span><br><span class="line">        throw new IllegalArgumentException(&quot;Message must have a target.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (msg.isInUse()) &#123;</span><br><span class="line">        throw new IllegalStateException(msg + &quot; This message is already in use.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    // 锁开始的地方</span><br><span class="line">    synchronized (this) &#123;</span><br><span class="line">        if (mQuitting) &#123;</span><br><span class="line">            IllegalStateException e = new IllegalStateException(msg.target + &quot; sending message to a Handler on a dead thread&quot;);</span><br><span class="line">            Log.w(TAG, e.getMessage(), e);</span><br><span class="line">            msg.recycle();</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        msg.markInUse();</span><br><span class="line">        msg.when = when;</span><br><span class="line">        Message p = mMessages;</span><br><span class="line">        boolean needWake;</span><br><span class="line">        if (p == null || when == 0 || when &lt; p.when) &#123;</span><br><span class="line">            // New head, wake up the event queue if blocked.</span><br><span class="line">            msg.next = p;</span><br><span class="line">            mMessages = msg;</span><br><span class="line">            needWake = mBlocked;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // Inserted within the middle of the queue. Usually we don&#x27;t have to wake</span><br><span class="line">            // up the event queue unless there is a barrier at the head of the queue</span><br><span class="line">            // and the message is the earliest asynchronous message in the queue.</span><br><span class="line">            needWake = mBlocked &amp;&amp; p.target == null &amp;&amp; msg.isAsynchronous();</span><br><span class="line">            Message prev;</span><br><span class="line">            for (;;) &#123;</span><br><span class="line">                prev = p;</span><br><span class="line">                p = p.next;</span><br><span class="line">                if (p == null || when &lt; p.when) &#123;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">                if (needWake &amp;&amp; p.isAsynchronous()) &#123;</span><br><span class="line">                    needWake = false;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            msg.next = p; // invariant: p == prev.next</span><br><span class="line">            prev.next = msg;</span><br><span class="line">        &#125;</span><br><span class="line">        // We can assume mPtr != 0 because mQuitting is false.</span><br><span class="line">        if (needWake) &#123;</span><br><span class="line">            nativeWake(mPtr);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br><span class="line">//锁结束的地方</span><br></pre></td></tr></table></figure>
-<p>synchronized锁是一个内置锁，也就是由系统控制锁的lock unlock时机的。在多线程的课程中我们有详细分析过，<br>有问题的同学可以去研究一下。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">synchronized (this) </span><br></pre></td></tr></table></figure>
-<p>这个锁，说明的是对所有调用同一个MessageQueue对象的线程来说，他们都是互斥的，然而，在我们的Handler里<br>面，一个线程是对应着一个唯一的Looper对象，而Looper中又只有一个唯一的MessageQueue（这个在上文中也有<br>介绍）。所以，我们主线程就只有一个MessageQueue对象，也就是说，所有的子线程向主线程发送消息的时候，<br>主线程一次都只会处理一个消息，其他的都需要等待，那么这个时候消息队列就不会出现混乱。</p>
-<p>……未完待续……</p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/03/%E5%AE%89%E5%8D%93/Framework%E5%86%85%E6%A0%B8%E8%AF%A6%E8%A7%A3/Handler%E6%B6%88%E6%81%AF%E6%9C%BA%E5%88%B6/" rel="prev" title="Handler消息机制">
+      <i class="fa fa-chevron-left"></i> Handler消息机制
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="深山老凌">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="深山老凌">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Adb/" class="post-title-link" itemprop="url">Adb命令</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/" itemprop="url" rel="index"><span itemprop="name">命令行</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="1-常用命令："><a href="#1-常用命令：" class="headerlink" title="1. 常用命令："></a>1. 常用命令：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">adb devices #查看连接设备</span><br><span class="line"></span><br><span class="line">adb -s cf123456 shell # 指定连接设备使用命令</span><br><span class="line"></span><br><span class="line">adb install test.apk # 安装应用</span><br><span class="line"></span><br><span class="line">adb install -r demo.apk #安装apk 到sd 卡：</span><br><span class="line"></span><br><span class="line">adb uninstall cn.com.test.mobile #卸载应用，需要指定包</span><br><span class="line"></span><br><span class="line">adb uninstall -k cn.com.test.mobile #卸载app 但保留数据和缓存文件</span><br><span class="line"></span><br><span class="line">adb shell pm list packages #列出手机装的所有app 的包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages -3 #列出除了系统应用的第三方应用包名</span><br><span class="line"></span><br><span class="line">adb shell pm clear cn.com.test.mobile #清除应用数据与缓存</span><br><span class="line"></span><br><span class="line">adb shell am start -ncn.com.test.mobile/.ui.SplashActivity #启动应用</span><br><span class="line"></span><br><span class="line">adb shell dumpsys package #包信息Package Information</span><br><span class="line"></span><br><span class="line">adb shell dumpsys meminfo #内存使用情况Memory Usage</span><br><span class="line"></span><br><span class="line">adb shell am force-stop cn.com.test.mobile #强制停止应用</span><br><span class="line"></span><br><span class="line">adb logcat #查看日志</span><br><span class="line"></span><br><span class="line">adb logcat -c #清除log 缓存</span><br><span class="line"></span><br><span class="line">adb logcat *:W #过滤warn日志</span><br><span class="line"></span><br><span class="line">adb reboot #重启</span><br><span class="line"></span><br><span class="line">adb shell top -s 10 #查看占用内存前10 的app</span><br><span class="line"></span><br><span class="line">adb push &lt;local&gt; &lt;remote&gt; #从本地复制文件到设备</span><br><span class="line"></span><br><span class="line">adb pull &lt;remote&gt; &lt;local&gt; #从设备复制文件到本地</span><br><span class="line"></span><br><span class="line">adb bugreport #查看bug 报告</span><br><span class="line"></span><br><span class="line">adb help #查看ADB 帮助</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-查看版本信息-应用信息"><a href="#2-查看版本信息-应用信息" class="headerlink" title="2.查看版本信息&amp;应用信息"></a>2.查看版本信息&amp;应用信息</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">adb shell getprop ro.build.version.release  查看Android 系统版本</span><br><span class="line"></span><br><span class="line">adb shell getprop ro.product.model  查看设备型号</span><br><span class="line"></span><br><span class="line">adb shell dumpsys battery   电池状况</span><br><span class="line"></span><br><span class="line">adb get-serialno    获取设备序列号</span><br><span class="line"></span><br><span class="line">adb shell wm size   查看屏幕分辨率</span><br><span class="line"></span><br><span class="line">adb shell wm density    查看屏幕密度</span><br><span class="line"></span><br><span class="line">adb shell settings get secure android_id  查看android_id</span><br><span class="line"></span><br><span class="line">adb shell -&gt; su -&gt; service call iphonesubinfo 1    查看IMEI</span><br><span class="line"></span><br><span class="line">adb shell cat /sys/class/net/wlan0/address  Mac地址,设备不同可能地址不同</span><br><span class="line"></span><br><span class="line">adb shell cat /proc/cpuinfo     CPU 信息</span><br><span class="line"></span><br><span class="line">adb shell cat /proc/meminfo     内存信息</span><br><span class="line"></span><br><span class="line">adb shell cat /system/build.prop    更多硬件与系统属性</span><br><span class="line"></span><br><span class="line">adb shell ps    查看进程</span><br><span class="line"></span><br><span class="line">adb shell pm list packages  列出手机装的所有app 的包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages -s   列出系统应用的所有包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages -3   列出除了系统应用的第三方应用包名</span><br><span class="line"></span><br><span class="line">adb shell pm list packages | find &quot;test&quot; win    列出手机装带有的test的包</span><br><span class="line"></span><br><span class="line">adb shell pm list packages | grep ‘test’ linux  列出手机装带有的test的包</span><br><span class="line"></span><br><span class="line">adb shell cat /sys/class/net/wlan0/address 获取MAC 地址, 根据系统版本参数可能不同</span><br><span class="line"></span><br><span class="line">adb shell dumpsys activity services [&lt;packagename&gt;] 查看正在运行的Services</span><br><span class="line"></span><br><span class="line">&lt;packagename&gt; 参数不是必须的，指定&lt;packagename&gt; 表示查看与某个包名相关的Services，不指定表示查看所有Services。</span><br><span class="line"></span><br><span class="line">&lt;packagename&gt; 不一定要给出完整的包名，比如运行adb shell dumpsys activity services com.tencent，那么包名com.tencent.weixin、com.tencent.qq 等相关的Services 都会列出来。</span><br></pre></td></tr></table></figure>
-
-<h4 id="3-安装和卸载"><a href="#3-安装和卸载" class="headerlink" title="3.安装和卸载"></a>3.安装和卸载</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">adb install &lt;apkfile&gt; 参数apkfile 为.apk 文件名称</span><br><span class="line"></span><br><span class="line">adb install -r test.apk 保留数据和缓存文件，重新安装apk</span><br><span class="line"></span><br><span class="line">adb install -s test.apk 安装apk到sd卡</span><br><span class="line"></span><br><span class="line">adb uninstall -k com.test.mobile    卸载app 但保留数据和缓存文件</span><br><span class="line"></span><br><span class="line">adb shell pm uninstall -k --user 0 &lt;packagename&gt; 卸载系统应用</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="4-启动停止服务"><a href="#4-启动停止服务" class="headerlink" title="4.启动停止服务"></a>4.启动停止服务</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">adb start-server</span><br><span class="line"></span><br><span class="line">adb kill-server</span><br><span class="line"></span><br><span class="line">adb -P &lt;port&gt; start-server  指定adb server 的网络端口port （默认为5037）启动服务</span><br></pre></td></tr></table></figure>
-
-<h4 id="5-与应用交互"><a href="#5-与应用交互" class="headerlink" title="5.与应用交互"></a>5.与应用交互</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">adb shell pm clear &lt;packagename&gt;  清除应用数据与缓存</span><br><span class="line"></span><br><span class="line">adb shell am force-stop &lt;packagename&gt;   强制停止应用</span><br><span class="line"></span><br><span class="line">adb shell am start -n com.tencent.mm/.ui.LauncherUI     启动activity</span><br><span class="line"></span><br><span class="line">adb shell am startservice -n com.tencent.mm/.plugin.accountsync.model.AccountAuthenticatorService  启动 Service</span><br><span class="line"></span><br><span class="line">adb shell am broadcast -a android.intent.action.BOOT_COMPLETED   向所有组件广播 BOOT_COMPLETED (开机广播)</span><br><span class="line"></span><br><span class="line">adb shell am broadcast -a android.intent.action.BOOT_COMPLETED -n org.mazhuang.boottimemeasure/.BootCompletedReceiver 只向某个应用发送广播BOOT_COMPLETED：</span><br><span class="line"></span><br><span class="line">adb shell am broadcast -a com.android.action.PLAY -p com.android.car -f 0x00000020 --es BACKGROUND &#x27;FALSE&#x27; 指定包名，携带参数。</span><br></pre></td></tr></table></figure>
-<h4 id="6-模拟按键-输入"><a href="#6-模拟按键-输入" class="headerlink" title="6.模拟按键&#x2F;输入"></a>6.模拟按键&#x2F;输入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">adb shell input keyevent 26  #电源键</span><br><span class="line">adb shell input keyevent 82  #菜单键</span><br><span class="line">adb shell input keyevent 3  #HOME 键</span><br><span class="line">adb shell input keyevent 4 #返回键</span><br><span class="line">adb shell input keyevent 24 #增加音量</span><br><span class="line">adb shell input keyevent 25 #降低音量</span><br><span class="line">adb shell input keyevent 164 #静音</span><br><span class="line">adb shell input keyevent 85  #播放/暂停</span><br><span class="line">adb shell input keyevent 86 #停止播放</span><br><span class="line">adb shell input keyevent 87 #播放下一首</span><br><span class="line">adb shell input keyevent 88 #播放上一首</span><br><span class="line">adb shell input keyevent 126 #恢复播放</span><br><span class="line">adb shell input keyevent 127 #暂停播放</span><br><span class="line">adb shell input keyevent 224 #点亮屏幕</span><br><span class="line">adb shell input keyevent 223 #熄灭屏幕</span><br><span class="line">adb shell input swipe 300 1000 300 500  #滑动解锁，向上滑动手势解锁</span><br><span class="line">#参数 300 1000 300 500 分别表示起始点x坐标 起始点y坐标 结束点x坐标 结束点y坐标 </span><br><span class="line">adb shell input text hello #焦点处于某文本框时输入文本</span><br></pre></td></tr></table></figure>
-
-<h4 id="7-实用功能"><a href="#7-实用功能" class="headerlink" title="7.实用功能"></a>7.实用功能</h4><h5 id="截图"><a href="#截图" class="headerlink" title="截图"></a>截图</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">adb exec-out screencap -p &gt; img.png     #老版本无exec-out命令，只适合于新版的截图</span><br><span class="line"></span><br><span class="line">adb shell screencap -p /sdcard/img.png      #老版本截图先保存在设备端</span><br><span class="line"></span><br><span class="line">-p 指定保存文件为 png 格式</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h5 id="录制屏幕"><a href="#录制屏幕" class="headerlink" title="录制屏幕"></a>录制屏幕</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell screenrecord /sdcard/filename.mp4</span><br></pre></td></tr></table></figure>
-<h5 id="查看连接过的WiFi密码"><a href="#查看连接过的WiFi密码" class="headerlink" title="查看连接过的WiFi密码"></a>查看连接过的WiFi密码</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/misc/wifi/WifiConfigStore.xml</span><br></pre></td></tr></table></figure>
-<h5 id="刷机相关命令"><a href="#刷机相关命令" class="headerlink" title="刷机相关命令"></a>刷机相关命令</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb reboot recovery     重启到Recovery模式</span><br></pre></td></tr></table></figure>
-
-<h5 id="日志相关"><a href="#日志相关" class="headerlink" title="日志相关"></a>日志相关</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">adb logcat -c &amp;&amp; adb logcat &gt;log.txt</span><br><span class="line"></span><br><span class="line">adb logcat *:E &gt;log.txt</span><br><span class="line"></span><br><span class="line">ANR文件导出：</span><br><span class="line">1.adb pull data/anr/traces.txt</span><br><span class="line">2.adb bugreport C:\Users\summer\Desktop</span><br></pre></td></tr></table></figure>
-
-<h5 id="统计App启动耗时"><a href="#统计App启动耗时" class="headerlink" title="统计App启动耗时"></a>统计App启动耗时</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell start -S -W com.example.camera/.MainActivity</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Git/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="深山老凌">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="深山老凌">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Git/" class="post-title-link" itemprop="url">Git</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/" itemprop="url" rel="index"><span itemprop="name">命令行</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Git 是一个强大的版本控制工具，用于跟踪和管理代码仓库的版本历史。以下是一些常见的 Git 命令以及它们的用法：</p>
-<ol>
-<li><p><strong>初始化一个新的 Git 仓库</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-
-<p>这个命令在当前目录创建一个新的 Git 仓库。</p>
-</li>
-<li><p><strong>克隆一个远程仓库</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;远程仓库URL&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这个命令用于从远程仓库克隆代码到本地。</p>
-</li>
-<li><p><strong>查看文件状态</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
-
-<p>这个命令显示工作目录中文件的状态，包括未跟踪、已修改和已暂存的文件。</p>
-</li>
-<li><p><strong>添加文件到暂存区</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add &lt;文件名&gt;</span><br></pre></td></tr></table></figure>
-
-<p>你可以使用这个命令将文件添加到 Git 的暂存区，以便后续提交。</p>
-</li>
-<li><p><strong>提交更改</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m <span class="string">&quot;提交说明&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>这个命令将你的暂存区中的更改提交到本地仓库，并附带一个提交说明。</p>
-</li>
-<li><p><strong>查看提交历史</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span></span><br></pre></td></tr></table></figure>
-
-<p>这个命令显示项目的提交历史，包括每个提交的作者、日期和提交说明。</p>
-</li>
-<li><p><strong>创建分支</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch &lt;分支名&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这个命令创建一个新的分支，你可以在新分支上进行开发，而不影响主分支。</p>
-</li>
-<li><p><strong>切换分支</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout &lt;分支名&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这个命令用于切换到指定分支。</p>
-</li>
-<li><p><strong>合并分支</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git merge &lt;分支名&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这个命令将指定分支的更改合并到当前分支。</p>
-</li>
-<li><p><strong>推送到远程仓库</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin &lt;分支名&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这个命令将本地分支的更改推送到远程仓库。</p>
-</li>
-<li><p><strong>拉取远程仓库的更改</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull</span><br></pre></td></tr></table></figure>
-
-<p>这个命令用于从远程仓库拉取最新的更改到本地。</p>
-</li>
-<li><p><strong>查看远程仓库</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote -v</span><br></pre></td></tr></table></figure>
-
-<p>这个命令列出了与你的本地仓库关联的远程仓库。</p>
-</li>
-<li><p><strong>撤销更改</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset &lt;文件名&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这个命令用于从暂存区中取消对文件的暂存。</p>
-</li>
-<li><p><strong>创建标签</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag &lt;标签名&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这个命令用于创建一个新的标签，通常用于标记版本发布。</p>
-</li>
-</ol>
-<p><strong>克隆大项目</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.postBuffer 524288000</span><br><span class="line"></span><br><span class="line">$ git <span class="built_in">clone</span> --depth 1 https://github.com/demo/xxxxxxx.git</span><br><span class="line">$ git remote set-branches origin <span class="string">&#x27;remote_branch_name&#x27;</span></span><br><span class="line">$ git fetch --depth 1 origin remote_branch_name</span><br><span class="line">$ git checkout remote_branch_nameÅ</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><em><strong>Gitee在提交大文件时，出现如下错误，异常退出，提示需要付费企业版支持Git LFS功能</strong></em></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> .git/hooks/pre-push</span><br><span class="line">git push -u origin <span class="string">&quot;master&quot;</span></span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Android%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="深山老凌">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="深山老凌">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Android%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/" class="post-title-link" itemprop="url">Android源码编译</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/" itemprop="url" rel="index"><span itemprop="name">命令行</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>一、java环境配置</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">udo apt-get install openjdk-8-jdk</span><br><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64</span><br><span class="line">export PATH=$JAVA_HOME/bin:$PATH</span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar</span><br><span class="line">java -version</span><br></pre></td></tr></table></figure>
-
-<p><strong>二、依赖库安装</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git  gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip python libtinfo5 libncurses5-dev libncurses5 u-boot-tools</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p><strong>三、问题集锦</strong></p>
-<ul>
-<li><p>Ensure Jack service is installed and started</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.从/etc/java-8-openjdk/security/java.security中找到jdk.tls.disabledAlgorithms取消TLSv1, TLSv1.1 禁用;</span><br><span class="line"></span><br><span class="line">2.检查jack 服务是否启动</span><br><span class="line">cd prebuilts/sdk/tools</span><br><span class="line">./jack-admin start-server/stop-server/kill-server</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>lex:aidl&lt;&#x3D;system&#x2F;tools&#x2F;aidl&#x2F;aidl_language_I.II FAILED:&#x2F;</p>
-</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export LC_ALL=C</span><br></pre></td></tr></table></figure>
-
-<p><strong>四、framework.jar的位置</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Linux/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="深山老凌">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="深山老凌">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Linux/" class="post-title-link" itemprop="url">Linux</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/" itemprop="url" rel="index"><span itemprop="name">命令行</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>以下是一些常见的 Linux 基本命令，用于在终端中执行各种任务：</p>
-<ol>
-<li><p><strong>文件和目录操作</strong>：</p>
-<ul>
-<li><code>ls</code>: 列出当前目录的文件和子目录。</li>
-<li><code>pwd</code>: 显示当前工作目录的路径。</li>
-<li><code>cd</code>: 切换目录，使用 <code>cd</code> 后跟目录路径。</li>
-<li><code>mkdir</code>: 创建新目录，使用 <code>mkdir</code> 后跟目录名。</li>
-<li><code>rmdir</code>: 删除空目录。</li>
-<li><code>touch</code>: 创建空文件或更新文件的访问和修改时间戳。</li>
-</ul>
-</li>
-<li><p><strong>文件查看和编辑</strong>：</p>
-<ul>
-<li><code>cat</code>: 查看文件内容。</li>
-<li><code>more</code> 或 <code>less</code>: 逐页查看文件内容。</li>
-<li><code>nano</code> 或 <code>vim</code> 或 <code>vi</code>: 启动文本编辑器。</li>
-<li><code>head</code> 或 <code>tail</code>: 显示文件的前几行或后几行。</li>
-<li><code>grep</code>: 在文件中搜索文本模式。</li>
-</ul>
-</li>
-<li><p><strong>文件和目录管理</strong>：</p>
-<ul>
-<li><code>cp</code>: 复制文件或目录。</li>
-<li><code>mv</code>: 移动文件或目录，也可用于重命名文件。</li>
-<li><code>rm</code>: 删除文件或目录。</li>
-<li><code>chmod</code>: 修改文件或目录的权限。</li>
-<li><code>chown</code>: 更改文件或目录的所有者。</li>
-<li><code>chgrp</code>: 更改文件或目录的组。</li>
-</ul>
-</li>
-<li><p><strong>文件压缩和解压</strong>：</p>
-<ul>
-<li><code>tar</code>: 创建和提取 tar 归档文件。</li>
-<li><code>gzip</code> 或 <code>gunzip</code>: 压缩或解压文件。</li>
-<li><code>zip</code> 或 <code>unzip</code>: 创建和提取 zip 压缩文件。</li>
-</ul>
-</li>
-<li><p><strong>系统信息查看</strong>：</p>
-<ul>
-<li><code>uname</code>: 显示系统信息。</li>
-<li><code>who</code>: 显示当前登录用户。</li>
-<li><code>ps</code>: 显示当前进程信息。</li>
-<li><code>top</code>: 动态显示系统资源使用情况。</li>
-<li><code>df</code>: 显示磁盘空间使用情况。</li>
-<li><code>free</code>: 显示内存使用情况。</li>
-</ul>
-</li>
-<li><p><strong>用户和权限管理</strong>：</p>
-<ul>
-<li><code>passwd</code>: 更改用户密码。</li>
-<li><code>useradd</code> 和 <code>userdel</code>: 创建和删除用户。</li>
-<li><code>groupadd</code> 和 <code>groupdel</code>: 创建和删除用户组。</li>
-<li><code>sudo</code>: 以超级用户权限执行命令。</li>
-<li><code>su</code>: 切换用户。</li>
-</ul>
-</li>
-<li><p><strong>网络操作</strong>：</p>
-<ul>
-<li><code>ping</code>: 测试与主机的网络连接。</li>
-<li><code>ifconfig</code> 或 <code>ip</code>: 显示和配置网络接口。</li>
-<li><code>netstat</code> 或 <code>ss</code>: 显示网络连接和路由表。</li>
-<li><code>ssh</code>: 远程登录到其他计算机。</li>
-<li><code>scp</code>: 安全复制文件到远程计算机。</li>
-</ul>
-</li>
-<li><p><strong>包管理（适用于不同的 Linux 发行版）</strong>：</p>
-<ul>
-<li><code>apt</code> 或 <code>apt-get</code>: Debian&#x2F;Ubuntu 包管理器。</li>
-<li><code>yum</code> 或 <code>dnf</code>: CentOS&#x2F;RHEL 包管理器。</li>
-<li><code>zypper</code>: openSUSE 包管理器。</li>
-</ul>
-</li>
-</ol>
-<p>这些是一些常见的 Linux 基本命令，可以帮助你在终端中执行常见的任务。要了解更多关于这些命令的详细信息和选项，请查阅命令的帮助文档，通常可以使用 <code>man</code> 命令查看，例如 <code>man ls</code> 或 <code>man grep</code>。</p>
-<h5 id="搜索apt软件包"><a href="#搜索apt软件包" class="headerlink" title="搜索apt软件包"></a>搜索apt软件包</h5> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-cache search &lt;keyword&gt;</span><br></pre></td></tr></table></figure>
-
-<h5 id="安装speex"><a href="#安装speex" class="headerlink" title="安装speex"></a>安装speex</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">下载地址：</span><br><span class="line">https://ftp.osuosl.org/pub/xiph/releases/speex/speex-1.2.0.tar.gz</span><br><span class="line">cd speex-1.2.0/</span><br><span class="line">./configure</span><br><span class="line">sudo make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
-<h5 id="安装Yasm"><a href="#安装Yasm" class="headerlink" title="安装Yasm"></a>安装Yasm</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">下载地址：</span><br><span class="line">http://www.tortall.net/projects/yasm/releases/</span><br><span class="line">tar -xvf yasm-1.3.0.tar.gz</span><br><span class="line">cd yasm-1.3.0/</span><br><span class="line">./configure</span><br><span class="line">sudo make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
-<h5 id="安装X264开发库"><a href="#安装X264开发库" class="headerlink" title="安装X264开发库"></a>安装X264开发库</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">下载地址：</span><br><span class="line">http://www.videolan.org/developers/x264.html</span><br><span class="line">tar -xvf x264-master.tar.bz2</span><br><span class="line">cd x264-master/</span><br><span class="line">./configure --enable-shared</span><br><span class="line">sudo make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
-<h5 id="安装X265开发库"><a href="#安装X265开发库" class="headerlink" title="安装X265开发库"></a>安装X265开发库</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git克隆地址：</span><br><span class="line">https://github.com/videolan/x265.git</span><br><span class="line">cd x265/build</span><br><span class="line">cmake ../source</span><br><span class="line">sudo make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://lingzhiwen.github.io/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Mac%E7%BB%88%E7%AB%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="深山老凌">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="深山老凌">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/10/02/%E5%91%BD%E4%BB%A4%E8%A1%8C/Mac%E7%BB%88%E7%AB%AF/" class="post-title-link" itemprop="url">Mac终端</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%91%BD%E4%BB%A4%E8%A1%8C/" itemprop="url" rel="index"><span itemprop="name">命令行</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>安装 Homebrew：</p>
-<p>打开终端，然后运行以下命令来安装 Homebrew。这个命令将安装 Homebrew 并设置中国镜像源：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -c &quot;$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)&quot;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -1097,6 +537,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#binder%E9%A9%B1%E5%8A%A8"><span class="nav-number">1.</span> <span class="nav-text">binder驱动</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#binder-init%E2%80%93%E9%A9%B1%E5%8A%A8%E8%AE%BE%E5%A4%87%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">binder_init–驱动设备的初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binder-open%E2%80%93%E6%89%93%E5%BC%80binder%E9%A9%B1%E5%8A%A8"><span class="nav-number">1.2.</span> <span class="nav-text">binder_open–打开binder驱动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#open%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="nav-number">1.2.1.</span> <span class="nav-text">open的执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#binder-open%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">binder_open方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binder-mmap%E2%80%93%E6%98%A0%E5%B0%84"><span class="nav-number">1.3.</span> <span class="nav-text">binder_mmap–映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#binder-ioctl%E2%80%93%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%86%99%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.</span> <span class="nav-text">binder_ioctl–数据读写操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#binder-ioctl-write-read"><span class="nav-number">1.4.1.</span> <span class="nav-text">binder_ioctl_write_read</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8ServiceManager"><span class="nav-number">2.</span> <span class="nav-text">启动ServiceManager</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8ServiceManager%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">启动ServiceManager进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#109-x61-x69-x6e-64-x6d-x61-x69-x6e-x2e-x63-x70-112"><span class="nav-number">2.2.</span> <span class="nav-text">main@main.cpp</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ProcessState-initWithDriver%E2%80%93%E6%89%93%E5%BC%80binder%E9%A9%B1%E5%8A%A8"><span class="nav-number">2.2.1.</span> <span class="nav-text">ProcessState::initWithDriver–打开binder驱动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-becomeContextManager"><span class="nav-number">2.2.2.</span> <span class="nav-text">ps-&gt;becomeContextManager</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFbinder-node%E7%BB%93%E6%9E%84%E4%BD%93%E5%91%A2%EF%BC%9F"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">什么是binder_node结构体呢？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BinderCallback-setupTo-looper-%E2%80%93%E5%BE%AA%E7%8E%AF%E7%AD%89%E5%BE%85%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C"><span class="nav-number">2.2.3.</span> <span class="nav-text">BinderCallback::setupTo(looper)–循环等待服务注册</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IPCThreadState-self-setupPolling"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">IPCThreadState::self()-&gt;setupPolling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IPCThreadState-self-flushCommands"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">IPCThreadState::self()-&gt;flushCommands</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96ServiceManager%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.</span> <span class="nav-text">获取ServiceManager对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#getIServiceManager"><span class="nav-number">3.1.</span> <span class="nav-text">getIServiceManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder-allowBlocking-BinderInternal-getContextObject"><span class="nav-number">3.2.</span> <span class="nav-text">Binder.allowBlocking(BinderInternal.getContextObject())</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ProcessState-self-getContextObject"><span class="nav-number">3.2.1.</span> <span class="nav-text">ProcessState::self()-&gt;getContextObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javaObjectForIBinder"><span class="nav-number">3.2.2.</span> <span class="nav-text">javaObjectForIBinder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServiceManagerNative-asInterface"><span class="nav-number">3.3.</span> <span class="nav-text">ServiceManagerNative.asInterface</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">注册服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#data-writeStrongBinder"><span class="nav-number">4.1.</span> <span class="nav-text">data.writeStrongBinder</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%EF%BC%9AibinderForJavaObject"><span class="nav-number">4.1.1.</span> <span class="nav-text">参数：ibinderForJavaObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%EF%BC%9Aparcel-writeStrongBinder"><span class="nav-number">4.1.2.</span> <span class="nav-text">方法：parcel-&gt;writeStrongBinder</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BinderProxy-transact"><span class="nav-number">4.2.</span> <span class="nav-text">BinderProxy.transact</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BpBinder-transact"><span class="nav-number">4.2.1.</span> <span class="nav-text">BpBinder.transact</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%9C%8D%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">获取服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1223,6 +664,25 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'bf37a6341f2fc4e68d60',
+      clientSecret: '2cb255975031412007c42f102073727121d42ec4',
+      repo        : 'blogComment',
+      owner       : 'lingzhiwen',
+      admin       : ['lingzhiwen'],
+      id          : 'b316bfbef8724f7cc9af7f5bb4f3613e',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>
