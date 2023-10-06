@@ -500,7 +500,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
       
           <h1 id="Handler详解"><a href="#Handler详解" class="headerlink" title="Handler详解"></a>Handler详解</h1><p>在android开发中，经常会在子线程中进行一些操作，当操作完毕后会通过handler发送一些数据给主线程，通知主线程做相应的操作。探素其背后的原理：子线程 handler 主线程 其实构成了线程模型中的经典问题 生产者-消费者模型。生产者-消费者模型：生产者和消费者在同一时间段内共用同一个存储空间，生产者往存储空间中添加数据，消费者从存储空间中取走数据。</p>
 <p><img src="/images/handler/handler_01.png" alt="handler_01.png"></p>
-<p>好处： - 保证数据生产消费的顺序（通过MessageQueue,先进先出） - 不管是生产者(子线程)还是消费者（主线程）<br>都只依赖缓冲区（handler），生产者消费者之间不会相互持有，使他们之间没有任何耦合<br>源码分析：<br>Handler<br>    Handler机制的相关类<br>    创建Looper<br>        创建MessageQueue以及Looper与当前线程的绑定<br>    Looper.loop()<br>    创建Handler<br>    创建Message<br>    Message和Handler的绑定<br>    Handler发送消息<br>    Handler处理消息 </p>
+<p>好处： - 保证数据生产消费的顺序（通过MessageQueue,先进先出） - 不管是生产者(子线程)还是消费者（主线程）<br>都只依赖缓冲区（handler），生产者消费者之间不会相互持有，使他们之间没有任何耦合<br>源码分析：</p>
 <h2 id="Handler机制的相关类"><a href="#Handler机制的相关类" class="headerlink" title="Handler机制的相关类"></a>Handler机制的相关类</h2><p>Hanlder：发送和接收消息<br>Looper：用于轮询消息队列，一个线程只能有一个Looper<br>Message： 消息实体<br>MessageQueue： 消息队列用于存储消息和管理消息</p>
 <h2 id="创建Looper"><a href="#创建Looper" class="headerlink" title="创建Looper"></a>创建Looper</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">创建Looper的方法是调用Looper.prepare() 方法</span><br></pre></td></tr></table></figure>
 
