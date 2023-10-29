@@ -4,117 +4,117 @@ categories: 命令行
 ---
 Git 是一个强大的版本控制工具，用于跟踪和管理代码仓库的版本历史。以下是一些常见的 Git 命令以及它们的用法：
 
-1. **初始化一个新的 Git 仓库**：
+1. **仓库**：
 
    ```bash
-   git init
-   ```
+   //初始化一个新的 Git 仓库
+   git init 
 
-   这个命令在当前目录创建一个新的 Git 仓库。
-
-2. **克隆一个远程仓库**：
-
-   ```bash
+   //克隆一个远程仓库
    git clone <远程仓库URL>
+
+   //推送到远程仓库
+   git push origin <分支名>
+
+   //拉取远程仓库的更改
+   git pull
+
+   //查看远程仓库
+   git remote -v
    ```
 
-   这个命令用于从远程仓库克隆代码到本地。
-
-3. **查看文件状态**：
+2. **文件状态**：
 
    ```bash
+   //查看文件状态
    git status
-   ```
 
-   这个命令显示工作目录中文件的状态，包括未跟踪、已修改和已暂存的文件。
-
-4. **添加文件到暂存区**：
-
-   ```bash
+   //添加文件到暂存区
    git add <文件名>
-   ```
 
-   你可以使用这个命令将文件添加到 Git 的暂存区，以便后续提交。
-
-5. **提交更改**：
-
-   ```bash
+   //提交更改
    git commit -m "提交说明"
-   ```
 
-   这个命令将你的暂存区中的更改提交到本地仓库，并附带一个提交说明。
-
-6. **查看提交历史**：
-
-   ```bash
+   //查看提交历史
    git log
+
+   //撤销更改
+   git reset <文件名>
    ```
 
-   这个命令显示项目的提交历史，包括每个提交的作者、日期和提交说明。
-
-7. **创建分支**：
+3. **分支**：
 
    ```bash
+   //创建新的分支
    git branch <分支名>
-   ```
 
-   这个命令创建一个新的分支，你可以在新分支上进行开发，而不影响主分支。
-
-8. **切换分支**：
-
-   ```bash
+   //切换分支
    git checkout <分支名>
-   ```
 
-   这个命令用于切换到指定分支。
-
-9. **合并分支**：
-
-   ```bash
+   //合并分支
    git merge <分支名>
+
+   //查看所有分支
+   git branch -a
    ```
 
-   这个命令将指定分支的更改合并到当前分支。
 
-10. **推送到远程仓库**：
-
-    ```bash
-    git push origin <分支名>
-    ```
-
-    这个命令将本地分支的更改推送到远程仓库。
-
-11. **拉取远程仓库的更改**：
-
-    ```bash
-    git pull
-    ```
-
-    这个命令用于从远程仓库拉取最新的更改到本地。
-
-12. **查看远程仓库**：
-
-    ```bash
-    git remote -v
-    ```
-
-    这个命令列出了与你的本地仓库关联的远程仓库。
-
-13. **撤销更改**：
-
-    ```bash
-    git reset <文件名>
-    ```
-
-    这个命令用于从暂存区中取消对文件的暂存。
-
-14. **创建标签**：
+4.  **创建标签**：
 
     ```bash
     git tag <标签名>
     ```
 
     这个命令用于创建一个新的标签，通常用于标记版本发布。
+
+5. **子模块**
+   Git 子模块是一种 Git 仓库中包含其他 Git 仓库的机制，允许您将一个 Git 仓库嵌套在另一个 Git 仓库中。以下是一些常用的 Git 子模块命令：
+   ```
+   //添加子模块
+   git submodule add <repository_url> <path>
+
+   //初始化子模块
+   git submodule init
+
+   //更新子模块，这将拉取子模块的最新内容。您还可以使用 `--init` 参数来初始化并更新子模块。
+   git submodule update
+
+   //递归更新子模块，这将递归更新所有子模块，包括它们的子模块。
+   git submodule update --recursive
+
+   //检出特定提交或分支，这将将子模块切换到其远程仓库的最新提交。
+   git submodule update --remote
+
+   //查看子模块状态，这将显示子模块的当前提交、路径和子模块仓库的 URL。
+   git submodule status
+
+   //删除子模块
+
+   //删除子模块的记录： 
+   git submodule deinit <path>
+   
+   //删除子模块目录：
+   git rm <path>
+
+   //删除子模块配置： 
+   rm -rf .git/modules/<path>
+   
+   //克隆包含子模块的仓库，如果您克隆了一个包含子模块的主仓库，您可以使用 `--recursive` 标志来递归初始化和更新子模块：
+   git clone --recursive <repository_url>
+
+   //排除git其他仓库，只执行当前仓库命令
+   git submodule foreach 'case $name in "submodule1") ;; *) git checkout dev ;; esac'
+
+   //android-build.gradle写法：
+   exec {              
+      commandLine 'git', 'submodule', 'foreach', 'case $name in submodule1) ;; *) git checkout dev ;; esac' 
+      }
+   ```
+
+这些是一些常用的 Git 子模块命令，帮助您管理主仓库中的子模块。子模块是在需要在一个项目中包含另一个项目的情况下非常有用的工具。
+
+
+
 
 **克隆大项目**
 
@@ -128,9 +128,28 @@ $ git checkout remote_branch_nameÅ
 
 ```
 
-***Gitee在提交大文件时，出现如下错误，异常退出，提示需要付费企业版支持Git LFS功能***
+**Gitee在提交大文件时，出现如下错误，异常退出，提示需要付费企业版支持Git LFS功能**
 
 ```bash
 rm .git/hooks/pre-push
 git push -u origin "master"
 ``` 
+
+**Git 仓库中的 .gitignore 文件不生效**
+```
+git rm -r --cached .
+git add .
+git commit -m "Fix .gitignore"
+```
+
+**查看当前 Git 仓库中的分支名称**
+```
+git rev-parse --abbrev-ref HEAD
+
+//android-build.gradle写法：
+def getGitBranch(String repoPath) {
+            Process process = ["git", "-C", file(repoPath), "rev-parse", "--abbrev-ref", "HEAD"].execute();
+            return process.text.trim();
+        }
+```
+
